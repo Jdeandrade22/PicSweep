@@ -1,6 +1,6 @@
 # PicSweeper
 
-**Author:** Jordan  
+
 **Date:** January 8, 2025  
 
 ## Overview
