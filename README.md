@@ -16,7 +16,7 @@ PicSweeper is an iOS application that allows users to efficiently manage their p
 ## Installation
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/PicSweeper.git
+   git clone https://github.com/Jdeandrade22/PicSweep
    ```
 2. Open `PicSweeper.xcodeproj` in Xcode.
 3. Ensure your environment includes:
