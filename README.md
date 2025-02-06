@@ -1,59 +1,41 @@
-\documentclass{article}
-\usepackage{hyperref}
+# PicSweeper
 
-\title{PicSweeper}
-\author{Jordan}
-\date{January 8, 2025}
+**Author:** Jordan  
+**Date:** January 8, 2025  
 
-\begin{document}
+## Overview
+PicSweeper is an iOS application that allows users to efficiently manage their photo library using swipe gestures. Users can **swipe right** to save a photo or **swipe left** to delete it, streamlining the organization of their gallery.
 
-\maketitle
+## Features
+- **Swipe-based Photo Management**: Swipe right to keep a photo, swipe left to delete it.
+- **Simple and Intuitive UI**: Built with SwiftUI for a responsive and modern experience.
+- **Photo Library Access**: Fetches and displays recent images from the device’s gallery.
+- **Shuffling and Navigation**: Enables looping through photos and shuffling them for better browsing.
+- **Settings Panel**: Users can adjust app preferences through an integrated settings view.
 
-\section{Overview}
-\textbf{PicSweeper} is an iOS application that allows users to efficiently manage their photo library using swipe gestures. Users can \textbf{swipe right} to save a photo or \textbf{swipe left} to delete it, streamlining the organization of their gallery.
+## Installation
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/yourusername/PicSweeper.git
+   ```
+2. Open `PicSweeper.xcodeproj` in Xcode.
+3. Ensure your environment includes:
+   - Xcode 15 or later
+   - iOS 17 SDK
+4. Build and run the app on a compatible iOS device or simulator.
 
-\section{Features}
-\begin{itemize}
-    \item \textbf{Swipe-based Photo Management}: Swipe right to keep a photo, swipe left to delete it.
-    \item \textbf{Simple and Intuitive UI}: Built with SwiftUI for a responsive and modern experience.
-    \item \textbf{Photo Library Access}: Fetches and displays recent images from the device’s gallery.
-    \item \textbf{Shuffling and Navigation}: Enables looping through photos and shuffling them for better browsing.
-    \item \textbf{Settings Panel}: Users can adjust app preferences through an integrated settings view.
-\end{itemize}
+## Usage
+1. Launch the application.
+2. Swipe **right** to save a photo to your library.
+3. Swipe **left** to delete a photo permanently.
+4. Open **Settings** to customize app preferences.
 
-\section{Installation}
-\begin{enumerate}
-    \item Clone the repository:
-    \begin{verbatim}
-    git clone https://github.com/yourusername/PicSweeper.git
-    \end{verbatim}
-    \item Open \texttt{PicSweeper.xcodeproj} in Xcode.
-    \item Ensure your environment includes:
-    \begin{itemize}
-        \item Xcode 15 or later
-        \item iOS 17 SDK
-    \end{itemize}
-    \item Build and run the app on a compatible iOS device or simulator.
-\end{enumerate}
+## Dependencies
+- SwiftUI for UI components.
+- Photos framework for accessing and managing the photo library.
 
-\section{Usage}
-\begin{enumerate}
-    \item Launch the application.
-    \item Swipe \textbf{right} to save a photo to your library.
-    \item Swipe \textbf{left} to delete a photo permanently.
-    \item Open \textbf{Settings} to customize app preferences.
-\end{enumerate}
+## License
+This project is licensed under the MIT License - see the [MIT License](https://opensource.org/licenses/MIT) for details.
 
-\section{Dependencies}
-\begin{itemize}
-    \item SwiftUI for UI components.
-    \item Photos framework for accessing and managing the photo library.
-\end{itemize}
-
-\section{License}
-This project is licensed under the MIT License - see the \href{https://opensource.org/licenses/MIT}{MIT License} for details.
-
-\section{Author}
+## Author
 Developed by Jordan.
-
-\end{document}
