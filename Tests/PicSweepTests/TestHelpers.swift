@@ -1,46 +1,44 @@
-import Foundation
 import XCTest
+import Foundation
+#if os(iOS)
+import UIKit
+#else
+import AppKit
+#endif
+@testable import PicSweep
 
 extension XCTestCase {
-    func createTestImage() -> UIImage {
+    func createTestImage() -> PlatformImage {
+        #if os(iOS)
         let size = CGSize(width: 100, height: 100)
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { context in
-            UIColor.red.setFill()
-            context.fill(CGRect(origin: .zero, size: size))
-        }
+        UIGraphicsBeginImageContext(size)
+        let context = UIGraphicsGetCurrentContext()!
+        context.setFillColor(UIColor.red.cgColor)
+        context.fill(CGRect(origin: .zero, size: size))
+        let image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return image
+        #else
+        let size = CGSize(width: 100, height: 100)
+        let image = NSImage(size: size)
+        image.lockFocus()
+        NSColor.red.set()
+        NSRect(origin: .zero, size: size).fill()
+        image.unlockFocus()
+        return image
+        #endif
     }
     
     func createTestPhoto() -> Photo {
-        let metadata = PhotoMetadata(
-            size: 1024,
-            dimensions: CGSize(width: 100, height: 100),
-            location: nil,
-            creationDate: Date(),
-            modificationDate: Date(),
-            camera: "Test Camera",
-            lens: "Test Lens",
-            exposure: 1.0,
-            iso: 100,
-            focalLength: 50.0
-        )
-        
-        let analysis = PhotoAnalysis(
-            faces: [],
-            scenes: [],
-            objects: [],
-            text: ""
-        )
-        
         return Photo(
-            id: UUID().uuidString,
-            url: URL(fileURLWithPath: "/test/photo.jpg"),
-            metadata: metadata,
-            analysis: analysis,
-            tags: ["test"],
-            createdAt: Date(),
-            modifiedAt: Date(),
-            thumbnail: nil
+            id: UUID(),
+            platformImage: createTestImage(),
+            metadata: PhotoMetadata(
+                creationDate: Date(),
+                location: nil,
+                size: 1024,
+                isFavorite: false
+            )
         )
     }
 } 

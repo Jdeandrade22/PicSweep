@@ -1,5 +1,6 @@
 import XCTest
 import SwiftUI
+#if os(iOS)
 import ARKit
 @testable import PicSweep
 
@@ -22,13 +23,14 @@ final class ARPhotoViewerTests: XCTestCase {
     }
     
     func testARPhotoPlacement() {
-        let photo = Photo(id: "test", image: UIImage(), metadata: PhotoMetadata())
+        let photo = createTestPhoto()
         XCTAssertNoThrow(try arViewer.placePhoto(photo))
     }
     
     func testARPhotoViewCreation() {
-        let photo = Photo(id: "test", image: UIImage(), metadata: PhotoMetadata())
+        let photo = createTestPhoto()
         let arPhotoView = ARPhotoView(photo: photo)
         XCTAssertNotNil(arPhotoView)
     }
-} 
+}
+#endif 
