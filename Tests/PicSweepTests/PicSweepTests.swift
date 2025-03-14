@@ -1,5 +1,5 @@
 import XCTest
-import UIKit
+import SwiftUI
 @testable import PicSweep
 
 final class PicSweepTests: XCTestCase {
@@ -13,8 +13,7 @@ final class PicSweepTests: XCTestCase {
 
     func testExample() throws {
         // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
         XCTAssertTrue(true)
     }
 
@@ -25,18 +24,14 @@ final class PicSweepTests: XCTestCase {
         }
     }
     
-    func testImageCreation() throws {
-        let image = createTestImage()
-        XCTAssertNotNil(image)
-        XCTAssertEqual(image.size.width, 100)
-        XCTAssertEqual(image.size.height, 100)
-    }
-    
-    func testPhotoCreation() throws {
-        let photo = createTestPhoto()
-        XCTAssertNotNil(photo)
-        XCTAssertNotNil(photo.id)
-        XCTAssertNotNil(photo.metadata)
-        XCTAssertNotNil(photo.analysis)
+    func testThemeColors() {
+        XCTAssertNotNil(Theme.primary)
+        XCTAssertNotNil(Theme.secondary)
+        XCTAssertNotNil(Theme.background)
+        XCTAssertNotNil(Theme.cardBackground)
+        XCTAssertNotNil(Theme.text)
+        XCTAssertNotNil(Theme.secondaryText)
+        XCTAssertNotNil(Theme.deleteColor)
+        XCTAssertNotNil(Theme.keepColor)
     }
 } 

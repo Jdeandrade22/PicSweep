@@ -31,8 +31,11 @@ let package = Package(
         .testTarget(
             name: "PicSweepTests",
             dependencies: ["PicSweep"],
+            path: "Tests/PicSweepTests",
             swiftSettings: [
                 .define("TESTING", .when(configuration: .debug)),
+                .enableUpcomingFeature("BareSlashRegexLiterals"),
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
     ]
