@@ -15,7 +15,7 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>3.0</string>
+    <string>4.0</string>
     <key>CFBundleVersion</key>
     <string>1</string>
     <key>LSRequiresIPhoneOS</key>
@@ -30,6 +30,7 @@
     <key>UIRequiredDeviceCapabilities</key>
     <array>
         <string>armv7</string>
+        <string>face-id</string>
     </array>
     <key>UISupportedInterfaceOrientations</key>
     <array>
@@ -37,5 +38,27 @@
     </array>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>PicSweep needs access to your photo library to help you organize and clean up your photos.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>PicSweep needs access to your camera to capture photos for organization.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>PicSweep uses your location to organize photos by place.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>PicSweep uses your location to organize photos by place, even when the app is in the background.</string>
+    <key>NSFaceIDUsageDescription</key>
+    <string>PicSweep uses Face ID to secure your private photos.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>PicSweep needs access to your microphone for voice commands and audio notes.</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>PicSweep uses tracking data to provide personalized photo organization suggestions.</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+    <key>UIRequiresFullScreen</key>
+    <true/>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>remote-notification</string>
+        <string>fetch</string>
+        <string>processing</string>
+    </array>
 </dict>
 </plist> 
