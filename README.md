@@ -1,69 +1,102 @@
 # PicSweep
 
-A modern iOS photo management app that helps you organize your photo library with intuitive swipe gestures and smart categorization.
+<div align="center">
+
+![Swift](https://img.shields.io/badge/Swift-5.5-orange.svg)
+![Platform](https://img.shields.io/badge/Platform-iOS%2015.0+-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Build Status](https://github.com/Jdeandrade22/PicSweep/workflows/Swift/badge.svg)
+
+A modern, intuitive photo management app that transforms your photo library organization experience with elegant swipe gestures and smart categorization.
+
+[Features](#features) • [Installation](#installation) • [Usage](#usage) • [Privacy](#privacy)
+
+</div>
 
 ## Features
 
-- **Intuitive Swipe Interface**
-  - Swipe right to keep photos
-  - Swipe left to delete photos
-  - Smooth animations and visual feedback
-  - Gesture guide overlay
+### Intuitive Swipe Interface
+- **Smooth Gestures**: Natural swipe interactions for photo management
+- **Visual Feedback**: Beautiful animations and haptic responses
+- **Gesture Guide**: Helpful overlay for new users
+- **Focus Mode**: Distraction-free photo review
 
-- **Smart Organization**
-  - Quick category assignment
-  - Custom categories (Family, Work, Travel, Food)
-  - Photo information display
-  - Location-based organization
+### Smart Organization
+- **Quick Categories**: Pre-defined categories (Family, Work, Travel, Food)
+- **Custom Tags**: Create your own categories
+- **Smart Info**: Display photo metadata and details
+- **Location Tags**: Organize by photo location
 
-- **Enhanced User Experience**
-  - Focus mode for distraction-free viewing
-  - Progress tracking
-  - Photo shuffling
-  - Haptic feedback
+### Safety First
+- **Delete Protection**: Confirmation dialogs for deletions
+- **Error Handling**: Graceful error recovery
+- **Data Privacy**: Local-only processing
+- **Backup Support**: Export organization data
 
-- **Safety Features**
-  - Confirmation dialogs for deletions
-  - Error handling
-  - Photo information display
-  - Location tracking
-
-## Requirements
-
-- iOS 15.0+
-- Xcode 13.0+
-- Swift 5.5+
+### Modern Design
+- **Clean UI**: Minimalist, focused interface
+- **Dark Mode**: Full dark mode support
+- **Accessibility**: VoiceOver and Dynamic Type
+- **Responsive**: Adapts to all iOS devices
 
 ## Installation
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/PicSweep.git
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Jdeandrade22/PicSweep.git
+   ```
 
-2. Open `PicSweep.xcodeproj` in Xcode
+2. **Open in Xcode**
+   ```bash
+   cd PicSweep
+   open PicSweep.xcodeproj
+   ```
 
-3. Build and run the project
+3. **Build and Run**
+   - Select your target device
+   - Press ⌘R or click the Run button
 
 ## Usage
 
-1. Launch the app
-2. Grant photo library access when prompted
-3. Use swipe gestures to organize photos:
+1. **Launch & Permissions**
+   - Open PicSweep
+   - Grant photo library access when prompted
+
+2. **Organize Photos**
    - Swipe right to keep
    - Swipe left to delete
-4. Use category buttons to organize photos
-5. Toggle focus mode for distraction-free viewing
-6. View photo details by tapping the photo
+   - Tap for details
+   - Use category buttons
+
+3. **Advanced Features**
+   - Toggle focus mode
+   - View progress
+   - Shuffle photos
+   - Check locations
 
 ## Privacy
 
-This app requires access to your photo library to function. All photo processing is done locally on your device.
+Your privacy is our priority. PicSweep:
+- Processes all photos locally on your device
+- Never uploads your photos
+- Requires only photo library access
+- Stores settings securely
+
+## Contributing
+
+We welcome contributions! Please:
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Contributing
+---
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+<div align="center">
+Made with ❤️ by Jordan Deandrade
+</div>
