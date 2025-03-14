@@ -11,11 +11,15 @@ on:
 
 jobs:
   build:
-
+    name: Build and Test
     runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
+    - name: Set up Swift
+      uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: "5.5"
     - name: Build
       run: swift build -v
     - name: Run tests
