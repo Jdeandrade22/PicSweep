@@ -1,4 +1,5 @@
 import Foundation
+import PlatformTypes
 
 #if os(iOS)
 import UIKit

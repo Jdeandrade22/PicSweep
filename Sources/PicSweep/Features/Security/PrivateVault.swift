@@ -76,19 +76,20 @@ class PrivateVault: ObservableObject {
     
     func encryptPhoto(_ photo: Photo) throws -> Data {
         #if os(iOS)
-        guard let image = photo.platformImage as? UIImage,
+        guard let image = photo.platformImage,
               let imageData = image.jpegData(compressionQuality: 0.8) else {
             throw VaultError.invalidImageData
         }
         #else
-        guard let image = photo.platformImage as? NSImage else {
+        guard let image = photo.platformImage else {
             throw VaultError.invalidImageData
         }
         
-        let imageRect = NSRect(origin: .zero, size: image.size)
+        var imageRect = NSRect(origin: .zero, size: image.size)
         guard let cgImage = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil),
               let bitmapRep = NSBitmapImageRep(cgImage: cgImage),
-              let imageData = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: 0.8]) else {
+              let imageData = bitmapRep.representation(using: NSBitmapImageRep.FileType.jpeg, 
+                                                     properties: [NSBitmapImageRep.PropertyKey.compressionFactor: NSNumber(value: 0.8)]) else {
             throw VaultError.invalidImageData
         }
         #endif
@@ -137,8 +138,8 @@ class PrivateVault: ObservableObject {
             }
         }
         #else
-        // On macOS, we'll use CIFilter for blurring
-        guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+        var imageRect = NSRect(origin: .zero, size: image.size)
+        guard let cgImage = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil) else {
             return image
         }
         
