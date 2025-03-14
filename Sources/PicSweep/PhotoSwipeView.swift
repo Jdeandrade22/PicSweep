@@ -64,133 +64,101 @@ class PhotoLibraryManager: ObservableObject {
 struct PhotoSwipeView: View {
     @StateObject private var photoLibraryManager = PhotoLibraryManager()
     @State private var currentIndex = 0
-    @State private var dragOffset: CGFloat = 0
-    @State private var showDeleteAlert = false
-    @State private var showErrorAlert = false
-    @State private var errorMessage = ""
+    @State private var translation: CGSize = .zero
+    @State private var showDeleteConfirmation = false
+    @State private var showKeepConfirmation = false
+    @State private var selectedPhoto: Photo?
     
     var body: some View {
-        VStack {
-            if !photoLibraryManager.photos.isEmpty {
-                // Progress bar
-                ProgressView(value: Double(photoLibraryManager.processedPhotos), total: Double(photoLibraryManager.totalPhotos))
-                    .tint(Theme.primary)
-                    .padding()
-                
-                // Photo count
-                Text("\(photoLibraryManager.processedPhotos) of \(photoLibraryManager.totalPhotos) photos")
-                    .font(.caption)
-                    .foregroundColor(Theme.secondaryText)
-                
-                ZStack {
-                    Image(uiImage: photoLibraryManager.photos[currentIndex])
+        GeometryReader { geometry in
+            ZStack {
+                if let currentPhoto = photoLibraryManager.photos[safe: currentIndex] {
+                    Image(platformImage: currentPhoto)
                         .resizable()
-                        .scaledToFit()
+                        .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .offset(x: dragOffset)
-                        .rotationEffect(.degrees(Double(dragOffset / 20)))
+                        .offset(x: translation.width, y: 0)
                         .gesture(
                             DragGesture()
                                 .onChanged { value in
-                                    dragOffset = value.translation.width
+                                    translation = value.translation
                                 }
                                 .onEnded { value in
-                                    withAnimation(.spring()) {
-                                        if value.translation.width > 100 {
-                                            nextPhoto()
-                                        } else if value.translation.width < -100 {
-                                            deletePhoto()
-                                        }
-                                        dragOffset = 0
-                                    }
+                                    handleSwipe(with: value.translation, in: geometry.size)
                                 }
                         )
-                    
-                    // Gesture guide
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Image(systemName: "arrow.left")
-                                .foregroundColor(Theme.deleteColor)
-                            Spacer()
-                            Image(systemName: "arrow.right")
-                                .foregroundColor(Theme.keepColor)
-                        }
-                        .padding()
-                        .background(Color.black.opacity(0.5))
-                    }
+                } else {
+                    Text("No photos available")
+                        .foregroundColor(.secondary)
                 }
-                
-                // Control buttons
-                HStack(spacing: 20) {
-                    Button(action: {
-                        withAnimation(.spring()) {
-                            photoLibraryManager.fetchPhotos()
-                            currentIndex = 0
-                        }
-                    }) {
-                        Image(systemName: "shuffle")
-                            .font(.title2)
-                            .foregroundColor(Theme.primary)
-                    }
-                }
-                .padding(.bottom)
-            } else {
-                Text("No photos available")
-                    .font(.system(.body, design: .rounded))
-                    .foregroundColor(Theme.secondaryText)
             }
+        }
+        .alert("Delete Photo?", isPresented: $showDeleteConfirmation) {
+            Button("Delete", role: .destructive) {
+                deleteCurrentPhoto()
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .alert("Keep Photo?", isPresented: $showKeepConfirmation) {
+            Button("Keep", role: .none) {
+                keepCurrentPhoto()
+            }
+            Button("Cancel", role: .cancel) {}
         }
         .onAppear {
             photoLibraryManager.fetchPhotos()
         }
-        .alert("Delete Photo", isPresented: $showDeleteAlert) {
-            Button("Cancel", role: .cancel) { }
-            Button("Delete", role: .destructive) {
-                performDelete()
-            }
-        } message: {
-            Text("Are you sure you want to delete this photo? This action cannot be undone.")
+    }
+    
+    private func handleSwipe(with translation: CGSize, in size: CGSize) {
+        let threshold = size.width * 0.5
+        
+        if translation.width < -threshold {
+            showDeleteConfirmation = true
+        } else if translation.width > threshold {
+            showKeepConfirmation = true
         }
-        .alert("Error", isPresented: $showErrorAlert) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text(errorMessage)
+        
+        withAnimation {
+            self.translation = .zero
         }
     }
     
-    private func nextPhoto() {
-        guard !photoLibraryManager.photos.isEmpty else { return }
+    private func deleteCurrentPhoto() {
+        if let photo = photoLibraryManager.photos[safe: currentIndex] {
+            photoLibraryManager.photos.remove(at: currentIndex)
+            photoLibraryManager.photoAssets.remove(at: currentIndex)
+            moveToNextPhoto()
+        }
+    }
+    
+    private func keepCurrentPhoto() {
+        moveToNextPhoto()
+    }
+    
+    private func moveToNextPhoto() {
         if currentIndex < photoLibraryManager.photos.count - 1 {
             currentIndex += 1
         } else {
             currentIndex = 0
         }
+        photoLibraryManager.fetchPhotos()
     }
-    
-    private func deletePhoto() {
-        showDeleteAlert = true
+}
+
+extension Collection {
+    subscript(safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
     }
-    
-    private func performDelete() {
-        guard !photoLibraryManager.photoAssets.isEmpty else { return }
-        
-        let assetToDelete = photoLibraryManager.photoAssets[currentIndex]
-        
-        PHPhotoLibrary.shared().performChanges({
-            PHAssetChangeRequest.deleteAssets([assetToDelete] as NSFastEnumeration)
-        }) { success, error in
-            DispatchQueue.main.async {
-                if success {
-                    self.photoLibraryManager.photos.remove(at: self.currentIndex)
-                    self.photoLibraryManager.photoAssets.remove(at: self.currentIndex)
-                    self.nextPhoto()
-                } else {
-                    self.errorMessage = error?.localizedDescription ?? "Failed to delete photo"
-                    self.showErrorAlert = true
-                }
-            }
-        }
+}
+
+extension Image {
+    init(platformImage: PlatformImage) {
+        #if os(iOS)
+        self.init(uiImage: platformImage)
+        #else
+        self.init(nsImage: platformImage)
+        #endif
     }
 }
 

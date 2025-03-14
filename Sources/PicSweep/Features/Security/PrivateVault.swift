@@ -74,30 +74,23 @@ class PrivateVault: ObservableObject {
         }
     }
     
-    func encryptPhoto(_ photo: Photo) throws -> Data {
-        #if os(iOS)
-        guard let image = photo.platformImage,
-              let imageData = image.jpegData(compressionQuality: 0.8) else {
+    func encryptPhoto(_ image: PlatformImage) throws -> Data {
+        #if os(macOS)
+        guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+            throw VaultError.invalidImageData
+        }
+        
+        let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
+        guard let imageData = bitmapRep.representation(using: .jpeg, properties: [:]) else {
             throw VaultError.invalidImageData
         }
         #else
-        guard let image = photo.platformImage else {
-            throw VaultError.invalidImageData
-        }
-        
-        var imageRect = NSRect(origin: .zero, size: image.size)
-        guard let cgImage = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil),
-              let bitmapRep = NSBitmapImageRep(cgImage: cgImage) else {
-            throw VaultError.invalidImageData
-        }
-        
-        guard let imageData = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: NSNumber(value: 0.8)]) else {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             throw VaultError.invalidImageData
         }
         #endif
         
-        let sealedBox = try AES.GCM.seal(imageData, using: key)
-        return sealedBox.combined ?? Data()
+        return try encryptData(imageData)
     }
     
     func decryptPhoto(data: Data) throws -> PlatformImage {
