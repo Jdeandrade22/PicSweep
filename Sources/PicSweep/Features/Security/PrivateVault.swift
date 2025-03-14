@@ -53,6 +53,14 @@ class PrivateVault: ObservableObject {
         key = SymmetricKey(size: .bits256)
     }
     
+    private func encryptData(_ data: Data) throws -> Data {
+        let sealedBox = try AES.GCM.seal(data, using: key)
+        guard let combined = sealedBox.combined else {
+            throw VaultError.encryptionFailed
+        }
+        return combined
+    }
+    
     func authenticate() async throws -> Bool {
         let context = LAContext()
         var error: NSError?
