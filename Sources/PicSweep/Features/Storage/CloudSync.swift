@@ -25,52 +25,34 @@ class CloudSync: ObservableObject {
     }
     
     func deletePhoto(_ photo: Photo) async throws {
-        let recordID = CKRecord.ID(recordName: photo.id)
+        let recordID = CKRecord.ID(recordName: photo.id.uuidString)
         try await database.deleteRecord(withID: recordID)
         logger.info("Successfully deleted photo: \(photo.id)")
     }
     
     private func createRecord(from photo: Photo) throws -> CKRecord {
         let record = CKRecord(recordType: "Photo")
-        record["id"] = photo.id
+        record["id"] = photo.id.uuidString
         record["url"] = photo.url
-        record["metadata"] = try JSONEncoder().encode(photo.metadata)
-        record["analysis"] = try JSONEncoder().encode(photo.analysis)
-        record["tags"] = photo.tags
+        record["metadata"] = photo.metadata
         record["createdAt"] = photo.createdAt
-        record["modifiedAt"] = photo.modifiedAt
-        
-        if let thumbnail = photo.thumbnail {
-            let asset = CKAsset(fileURL: thumbnail)
-            record["thumbnail"] = asset
-        }
-        
         return record
     }
     
     private func createPhoto(from record: CKRecord) throws -> Photo {
-        guard let id = record["id"] as? String,
+        guard let idString = record["id"] as? String,
+              let id = UUID(uuidString: idString),
               let url = record["url"] as? URL,
-              let metadataData = record["metadata"] as? Data,
-              let analysisData = record["analysis"] as? Data,
-              let tags = record["tags"] as? [String],
-              let createdAt = record["createdAt"] as? Date,
-              let modifiedAt = record["modifiedAt"] as? Date else {
+              let metadata = record["metadata"] as? [String: String],
+              let createdAt = record["createdAt"] as? Date else {
             throw CloudError.invalidRecord
         }
-        
-        let metadata = try JSONDecoder().decode(PhotoMetadata.self, from: metadataData)
-        let analysis = try JSONDecoder().decode(PhotoAnalysis.self, from: analysisData)
         
         return Photo(
             id: id,
             url: url,
-            metadata: metadata,
-            analysis: analysis,
-            tags: tags,
             createdAt: createdAt,
-            modifiedAt: modifiedAt,
-            thumbnail: (record["thumbnail"] as? CKAsset)?.fileURL
+            metadata: metadata
         )
     }
     

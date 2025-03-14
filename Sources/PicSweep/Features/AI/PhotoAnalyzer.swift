@@ -3,13 +3,6 @@ import Logging
 #if canImport(Vision)
 import Vision
 #endif
-#if os(iOS)
-import UIKit
-typealias PlatformImage = UIImage
-#elseif os(macOS)
-import AppKit
-typealias PlatformImage = NSImage
-#endif
 
 struct PhotoAnalysis: Codable {
     var faces: [Face]

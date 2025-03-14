@@ -10,14 +10,6 @@ import Photos
 import Foundation
 import Logging
 
-#if os(iOS)
-import UIKit
-typealias PlatformImage = UIImage
-#elseif os(macOS)
-import AppKit
-typealias PlatformImage = NSImage
-#endif
-
 public class PhotoManager: ObservableObject {
     private let logger = Logger(label: "com.picsweep.PhotoManager")
     @Published private(set) var photos: [Photo] = []
