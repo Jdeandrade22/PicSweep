@@ -1,9 +1,10 @@
 import Foundation
 import CloudKit
+import Logging
 
-class CloudSync {
+class CloudSync: ObservableObject {
     static let shared = CloudSync()
-    private let logger = Logger(subsystem: "com.picsweep", category: "CloudSync")
+    private let logger = Logger(label: "com.picsweep.CloudSync")
     private let container = CKContainer.default()
     private let database: CKDatabase
     
@@ -72,6 +73,36 @@ class CloudSync {
             thumbnail: (record["thumbnail"] as? CKAsset)?.fileURL
         )
     }
+    
+    func uploadPhoto(_ photo: Photo) async throws {
+        // Simulated cloud upload
+        logger.info("Uploading photo: \(photo.id)")
+        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
+        logger.info("Upload complete: \(photo.id)")
+    }
+    
+    func downloadPhoto(id: String) async throws -> Photo {
+        // Simulated cloud download
+        logger.info("Downloading photo: \(id)")
+        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
+        
+        guard let uuid = UUID(uuidString: id) else {
+            throw CloudError.invalidPhotoId
+        }
+        
+        let metadata = PhotoMetadata(
+            tags: ["downloaded"],
+            location: nil,
+            dateCreated: Date()
+        )
+        
+        return Photo(
+            id: uuid,
+            url: URL(string: "cloud://\(id)")!,
+            createdAt: Date(),
+            metadata: metadata.asDictionary
+        )
+    }
 }
 
 enum CloudError: Error {
@@ -79,17 +110,24 @@ enum CloudError: Error {
     case syncFailed
     case fetchFailed
     case deleteFailed
+    case invalidPhotoId
+    case uploadFailed
+    case downloadFailed
 }
 
 struct PhotoMetadata: Codable {
-    let size: Int64
-    let dimensions: CGSize
-    let location: CLLocation?
-    let creationDate: Date
-    let modificationDate: Date
-    let camera: String?
-    let lens: String?
-    let exposure: Double?
-    let iso: Int?
-    let focalLength: Double?
+    let tags: [String]
+    let location: String?
+    let dateCreated: Date
+    
+    var asDictionary: [String: String] {
+        var dict: [String: String] = [
+            "tags": tags.joined(separator: ","),
+            "dateCreated": ISO8601DateFormatter().string(from: dateCreated)
+        ]
+        if let location = location {
+            dict["location"] = location
+        }
+        return dict
+    }
 } 

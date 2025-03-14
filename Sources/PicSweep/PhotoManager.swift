@@ -107,19 +107,19 @@ public class PhotoManager: ObservableObject {
         options.isSynchronous = false
         options.deliveryMode = .highQualityFormat
 
-        #if os(iOS)
         imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { image, _ in
+            #if os(iOS)
             completion(image)
-        }
-        #else
-        imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { image, _ in
-            if let cgImage = image?.cgImage {
-                completion(NSImage(cgImage: cgImage, size: targetSize))
+            #else
+            if let image = image {
+                let nsImage = NSImage(size: targetSize)
+                nsImage.addRepresentation(NSBitmapImageRep(cgImage: image.cgImage!))
+                completion(nsImage)
             } else {
                 completion(nil)
             }
+            #endif
         }
-        #endif
     }
 
     func getPhoto(id: UUID?) -> Photo? {
