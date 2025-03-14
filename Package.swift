@@ -4,23 +4,22 @@ import PackageDescription
 let package = Package(
     name: "PicSweep",
     platforms: [
-        .iOS(.v15),
-        .macOS(.v12)
+        .iOS(.v15)
     ],
     products: [
         .library(
             name: "PicSweep",
             targets: ["PicSweep"]),
     ],
-    dependencies: [],
+    dependencies: [
+        // Add any dependencies here if needed
+    ],
     targets: [
         .target(
             name: "PicSweep",
-            dependencies: [],
-            path: "Sources"),
+            dependencies: []),
         .testTarget(
             name: "PicSweepTests",
-            dependencies: ["PicSweep"],
-            path: "Tests")
+            dependencies: ["PicSweep"]),
     ]
 ) 
