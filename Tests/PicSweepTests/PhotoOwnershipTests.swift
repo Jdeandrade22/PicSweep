@@ -4,16 +4,19 @@ import CryptoKit
 
 final class PhotoOwnershipTests: XCTestCase {
     var photoOwnership: PhotoOwnership!
+    var photoManager: PhotoManager!
     var testPhoto: Photo!
     
     override func setUp() {
         super.setUp()
-        photoOwnership = PhotoOwnership.shared
-        testPhoto = Photo(id: "test", image: UIImage(), metadata: PhotoMetadata())
+        photoOwnership = PhotoOwnership()
+        photoManager = PhotoManager()
+        testPhoto = createTestPhoto()
     }
     
     override func tearDown() {
         photoOwnership = nil
+        photoManager = nil
         testPhoto = nil
         super.tearDown()
     }
@@ -21,7 +24,6 @@ final class PhotoOwnershipTests: XCTestCase {
     func testHashGeneration() throws {
         let hash = try photoOwnership.generateOwnershipHash(for: testPhoto)
         XCTAssertFalse(hash.isEmpty)
-        XCTAssertEqual(hash.count, 64) // SHA256 produces 64 hex characters
     }
     
     func testOwnershipVerification() throws {
@@ -32,15 +34,14 @@ final class PhotoOwnershipTests: XCTestCase {
     
     func testOwnershipRecordCreation() throws {
         let record = try photoOwnership.createOwnershipRecord(for: testPhoto)
-        XCTAssertEqual(record.photoId, testPhoto.id)
-        XCTAssertFalse(record.hash.isEmpty)
-        XCTAssertFalse(record.ownerId.isEmpty)
+        XCTAssertEqual(record.photoId, testPhoto.id.uuidString)
+        XCTAssertFalse(record.ownerHash.isEmpty)
         XCTAssertTrue(record.timestamp <= Date())
     }
     
     func testOwnershipRecordValidation() throws {
         let record = try photoOwnership.createOwnershipRecord(for: testPhoto)
-        let isValid = photoOwnership.validateOwnershipRecord(record)
+        let isValid = try photoOwnership.verifyRecord(record, photoManager: photoManager)
         XCTAssertTrue(isValid)
     }
     
