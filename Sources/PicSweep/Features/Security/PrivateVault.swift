@@ -81,10 +81,14 @@ class PrivateVault: ObservableObject {
             throw VaultError.invalidImageData
         }
         #else
-        guard let image = photo.platformImage as? NSImage,
-              let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: [:]),
-              let imageRep = NSBitmapImageRep(cgImage: cgImage),
-              let imageData = imageRep.representation(using: NSBitmapImageRep.FileType.jpeg, properties: [NSBitmapImageRep.PropertyKey.compressionFactor: NSNumber(value: 0.8)]) else {
+        guard let image = photo.platformImage as? NSImage else {
+            throw VaultError.invalidImageData
+        }
+        
+        let imageRect = NSRect(origin: .zero, size: image.size)
+        guard let cgImage = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil),
+              let bitmapRep = NSBitmapImageRep(cgImage: cgImage),
+              let imageData = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: 0.8]) else {
             throw VaultError.invalidImageData
         }
         #endif
