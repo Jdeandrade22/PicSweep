@@ -10,18 +10,37 @@ import Photos
 import Foundation
 import Logging
 
+#if os(iOS)
+import UIKit
+typealias PlatformImage = UIImage
+#elseif os(macOS)
+import AppKit
+typealias PlatformImage = NSImage
+#endif
+
 public class PhotoManager: ObservableObject {
     private let logger = Logger(label: "com.picsweep.PhotoManager")
     @Published private(set) var photos: [Photo] = []
-    @Published var currentPhoto: UIImage?
+    @Published var currentPhoto: PlatformImage?
     @Published var currentIndex: Int = 0
+    
+    private let imageManager = PHImageManager.default()
 
     func loadPhotos() {
         PhotoManager.fetchPhotos { assets in
-            let shuffledAssets = PhotoManager.shufflePhotos(assets) // Shuffle the photos
+            let shuffledAssets = PhotoManager.shufflePhotos(assets)
             DispatchQueue.main.async {
-                self.photos = shuffledAssets
-                self.currentIndex = 0 // Reset to the first photo
+                // Convert PHAssets to our Photo model
+                self.photos = shuffledAssets.compactMap { asset in
+                    guard let localIdentifier = UUID(uuidString: asset.localIdentifier) else { return nil }
+                    return Photo(
+                        id: localIdentifier,
+                        url: URL(string: "photos://\(asset.localIdentifier)")!,
+                        createdAt: asset.creationDate ?? Date(),
+                        metadata: ["assetIdentifier": asset.localIdentifier]
+                    )
+                }
+                self.currentIndex = 0
                 self.loadCurrentPhoto()
             }
         }
@@ -29,8 +48,13 @@ public class PhotoManager: ObservableObject {
 
     func loadCurrentPhoto() {
         guard currentIndex < photos.count else { return }
-        let asset = photos[currentIndex]
-        PhotoManager.getUIImage(from: asset) { image in
+        let photo = photos[currentIndex]
+        guard let assetId = photo.metadata["assetIdentifier"],
+              let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil).firstObject else {
+            return
+        }
+        
+        PhotoManager.getImage(from: asset) { image in
             DispatchQueue.main.async {
                 self.currentPhoto = image
             }
@@ -41,7 +65,7 @@ public class PhotoManager: ObservableObject {
         if currentIndex < photos.count - 1 {
             currentIndex += 1
         } else {
-            currentIndex = 0 // Loop back to the first photo
+            currentIndex = 0
         }
         loadCurrentPhoto()
     }
@@ -50,7 +74,7 @@ public class PhotoManager: ObservableObject {
         if currentIndex > 0 {
             currentIndex -= 1
         } else {
-            currentIndex = photos.count - 1 // Loop back to the last photo
+            currentIndex = photos.count - 1
         }
         loadCurrentPhoto()
     }
@@ -73,21 +97,29 @@ public class PhotoManager: ObservableObject {
     }
 
     static func shufflePhotos(_ photos: [PHAsset]) -> [PHAsset] {
-        let shuffled = photos.shuffled()
-        print("Shuffled photos:", shuffled)
-        return shuffled
+        return photos.shuffled()
     }
 
-    static func getUIImage(from asset: PHAsset, completion: @escaping (UIImage?) -> Void) {
+    static func getImage(from asset: PHAsset, completion: @escaping (PlatformImage?) -> Void) {
         let imageManager = PHImageManager.default()
-        let targetSize = CGSize(width: 300, height: 300) // Adjust as needed
+        let targetSize = CGSize(width: 300, height: 300)
         let options = PHImageRequestOptions()
         options.isSynchronous = false
         options.deliveryMode = .highQualityFormat
 
+        #if os(iOS)
         imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { image, _ in
             completion(image)
         }
+        #else
+        imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { image, _ in
+            if let cgImage = image?.cgImage {
+                completion(NSImage(cgImage: cgImage, size: targetSize))
+            } else {
+                completion(nil)
+            }
+        }
+        #endif
     }
 
     func getPhoto(id: UUID?) -> Photo? {

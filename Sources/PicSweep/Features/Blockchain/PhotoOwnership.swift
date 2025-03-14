@@ -31,7 +31,7 @@ class PhotoOwnership: ObservableObject {
     }
     
     func verifyRecord(_ record: OwnershipRecord, photoManager: PhotoManager) throws -> Bool {
-        guard let photo = try? photoManager.getPhoto(id: UUID(uuidString: record.photoId)) else {
+        guard let photo = photoManager.getPhoto(id: UUID(uuidString: record.photoId)) else {
             logger.warning("Could not find photo for ownership record")
             return false
         }
