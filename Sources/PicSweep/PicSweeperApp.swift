@@ -9,7 +9,9 @@ import SwiftUI
 
 @main
 struct PicSweeperApp: App {
-    var body: some Scene {
+    typealias Body = WindowGroup<ContentView>
+    
+    var body: WindowGroup<ContentView> {
         WindowGroup {
             ContentView()
         }

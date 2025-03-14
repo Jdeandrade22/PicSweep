@@ -9,10 +9,26 @@ import SwiftUI
 import Photos
 
 class PhotoLibraryManager: ObservableObject {
-    @Published var photos: [UIImage] = []
+    @Published var photos: [PlatformImage] = []
     @Published var photoAssets: [PHAsset] = []
     @Published var totalPhotos: Int = 0
     @Published var processedPhotos: Int = 0
+    @Published var currentPhoto: PlatformImage?
+
+    func removeCurrentPhoto(at index: Int) {
+        guard index < photos.count else { return }
+        photos.remove(at: index)
+        photoAssets.remove(at: index)
+        updateCurrentPhoto(at: index)
+    }
+    
+    func updateCurrentPhoto(at index: Int) {
+        guard index < photos.count else {
+            currentPhoto = nil
+            return
+        }
+        currentPhoto = photos[index]
+    }
 
     func fetchPhotos() {
         DispatchQueue.main.async {
@@ -28,7 +44,7 @@ class PhotoLibraryManager: ObservableObject {
                 let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
                 
                 var tempAssets: [PHAsset] = []
-                var tempImages: [UIImage] = []
+                var tempImages: [PlatformImage] = []
                 
                 fetchResult.enumerateObjects { asset, _, _ in
                     tempAssets.append(asset)
@@ -67,12 +83,11 @@ struct PhotoSwipeView: View {
     @State private var translation: CGSize = .zero
     @State private var showDeleteConfirmation = false
     @State private var showKeepConfirmation = false
-    @State private var selectedPhoto: Photo?
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                if let currentPhoto = photoLibraryManager.photos[safe: currentIndex] {
+                if let currentPhoto = photoLibraryManager.currentPhoto {
                     Image(platformImage: currentPhoto)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -125,11 +140,8 @@ struct PhotoSwipeView: View {
     }
     
     private func deleteCurrentPhoto() {
-        if let photo = photoLibraryManager.photos[safe: currentIndex] {
-            photoLibraryManager.photos.remove(at: currentIndex)
-            photoLibraryManager.photoAssets.remove(at: currentIndex)
-            moveToNextPhoto()
-        }
+        photoLibraryManager.removeCurrentPhoto(at: currentIndex)
+        moveToNextPhoto()
     }
     
     private func keepCurrentPhoto() {
@@ -142,7 +154,7 @@ struct PhotoSwipeView: View {
         } else {
             currentIndex = 0
         }
-        photoLibraryManager.fetchPhotos()
+        photoLibraryManager.updateCurrentPhoto(at: currentIndex)
     }
 }
 
@@ -174,7 +186,7 @@ struct PhotoInfoView: View {
                     .font(.caption)
             }
             
-            if let location = asset.location {
+            if asset.location != nil {
                 Text("Location: \(locationString)")
                     .font(.caption)
             }
@@ -222,3 +234,4 @@ struct PhotoInfoView: View {
     }
 }
 //
+
