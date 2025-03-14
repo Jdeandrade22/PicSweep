@@ -1,89 +1,66 @@
 import XCTest
+import Vision
 @testable import PicSweep
 
 final class PhotoAnalyzerTests: XCTestCase {
     var analyzer: PhotoAnalyzer!
+    var image: PlatformImage!
     
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         analyzer = PhotoAnalyzer()
+        image = createTestImage()
     }
     
-    override func tearDownWithError() throws {
+    override func tearDown() {
         analyzer = nil
+        image = nil
+        super.tearDown()
     }
     
-    func testAnalyzePhoto() async throws {
-        #if os(iOS)
-        let image = createTestImage()
+    func testPhotoAnalysis() async throws {
         let analysis = try await analyzer.analyzePhoto(image)
         
-        XCTAssertNotNil(analysis)
+        // Test faces
         XCTAssertNotNil(analysis.faces)
-        XCTAssertNotNil(analysis.scenes)
-        XCTAssertNotNil(analysis.objects)
-        XCTAssertNotNil(analysis.text)
-        #else
-        // On macOS, photo analysis is limited
-        let image = createTestImage()
-        let analysis = try await analyzer.analyzePhoto(image)
+        if !analysis.faces.isEmpty {
+            let face = analysis.faces[0]
+            XCTAssertGreaterThanOrEqual(face.confidence, 0)
+            XCTAssertLessThanOrEqual(face.confidence, 1)
+            XCTAssertFalse(face.bounds.isEmpty)
+        }
         
-        XCTAssertNotNil(analysis)
+        // Test scenes
+        XCTAssertNotNil(analysis.scenes)
+        if !analysis.scenes.isEmpty {
+            let scene = analysis.scenes[0]
+            XCTAssertFalse(scene.identifier.isEmpty)
+            XCTAssertGreaterThanOrEqual(scene.confidence, 0)
+            XCTAssertLessThanOrEqual(scene.confidence, 1)
+        }
+        
+        // Test objects
+        XCTAssertNotNil(analysis.objects)
+        if !analysis.objects.isEmpty {
+            let object = analysis.objects[0]
+            XCTAssertFalse(object.identifier.isEmpty)
+            XCTAssertGreaterThanOrEqual(object.confidence, 0)
+            XCTAssertLessThanOrEqual(object.confidence, 1)
+            XCTAssertFalse(object.bounds.isEmpty)
+        }
+        
+        // Test text recognition
+        XCTAssertNotNil(analysis.text)
+        // Text might be empty if no text is found in the image
+    }
+    
+    #if os(macOS)
+    func testMacOSLimitation() async throws {
+        let analysis = try await analyzer.analyzePhoto(image)
         XCTAssertTrue(analysis.faces.isEmpty)
         XCTAssertTrue(analysis.scenes.isEmpty)
         XCTAssertTrue(analysis.objects.isEmpty)
-        XCTAssertEqual(analysis.text, "")
-        #endif
+        XCTAssertTrue(analysis.text.isEmpty)
     }
-    
-    func testDetectFaces() async throws {
-        #if os(iOS)
-        let image = createTestImage()
-        let faces = try await analyzer.detectFaces(in: image)
-        XCTAssertNotNil(faces)
-        #else
-        // Face detection not supported on macOS
-        let image = createTestImage()
-        let faces = try await analyzer.detectFaces(in: image)
-        XCTAssertTrue(faces.isEmpty)
-        #endif
-    }
-    
-    func testDetectScenes() async throws {
-        #if os(iOS)
-        let image = createTestImage()
-        let scenes = try await analyzer.detectScenes(in: image)
-        XCTAssertNotNil(scenes)
-        #else
-        // Scene detection not supported on macOS
-        let image = createTestImage()
-        let scenes = try await analyzer.detectScenes(in: image)
-        XCTAssertTrue(scenes.isEmpty)
-        #endif
-    }
-    
-    func testDetectObjects() async throws {
-        #if os(iOS)
-        let image = createTestImage()
-        let objects = try await analyzer.detectObjects(in: image)
-        XCTAssertNotNil(objects)
-        #else
-        // Object detection not supported on macOS
-        let image = createTestImage()
-        let objects = try await analyzer.detectObjects(in: image)
-        XCTAssertTrue(objects.isEmpty)
-        #endif
-    }
-    
-    func testRecognizeText() async throws {
-        #if os(iOS)
-        let image = createTestImage()
-        let text = try await analyzer.recognizeText(in: image)
-        XCTAssertNotNil(text)
-        #else
-        // Text recognition not supported on macOS
-        let image = createTestImage()
-        let text = try await analyzer.recognizeText(in: image)
-        XCTAssertEqual(text, "")
-        #endif
-    }
+    #endif
 } 
