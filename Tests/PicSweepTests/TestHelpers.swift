@@ -32,17 +32,12 @@ extension XCTestCase {
     func createTestPhoto() -> Photo {
         let testDate = Date()
         let testURL = URL(fileURLWithPath: "/tmp/test.jpg")
-        let metadata = PhotoMetadata(
-            tags: ["test"],
-            location: nil,
-            dateCreated: testDate
-        )
         
         return Photo(
             id: UUID(),
             url: testURL,
             createdAt: testDate,
-            metadata: ["tags": "test"],
+            metadata: ["tags": "test", "dateCreated": testDate.ISO8601Format()],
             platformImage: createTestImage()
         )
     }
