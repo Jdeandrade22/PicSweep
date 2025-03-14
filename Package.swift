@@ -7,7 +7,7 @@ let package = Package(
         .iOS(.v15)
     ],
     products: [
-        .library(
+        .executable(
             name: "PicSweep",
             targets: ["PicSweep"]),
     ],
@@ -15,10 +15,13 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections.git", from: "0.0.1")
     ],
     targets: [
-        .target(
+        .executableTarget(
             name: "PicSweep",
             dependencies: [
                 .product(name: "Collections", package: "swift-collections")
+            ],
+            resources: [
+                .process("Assets.xcassets")
             ]),
         .testTarget(
             name: "PicSweepTests",

@@ -1,17 +1,13 @@
 # PicSweep
 
-<div align="center">
+[![Swift](https://img.shields.io/badge/Swift-5.5-orange.svg)](https://swift.org)
+[![Platform](https://img.shields.io/badge/Platform-iOS%2015.0+-blue.svg)](https://developer.apple.com/ios/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-3.0.0-purple.svg)](https://github.com/yourusername/PicSweep/releases)
 
-![Swift](https://img.shields.io/badge/Swift-5.5-orange.svg)
-![Platform](https://img.shields.io/badge/Platform-iOS%2015.0+-blue.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Build Status](https://github.com/Jdeandrade22/PicSweep/workflows/Swift/badge.svg)
-
-A modern, intuitive photo management app that transforms your photo library organization experience with elegant swipe gestures and smart categorization.
+PicSweep is a modern iOS app that helps you organize and clean up your photo library using intuitive swipe gestures. Built with SwiftUI, it offers a seamless and efficient way to manage your photos.
 
 [Features](#features) • [Installation](#installation) • [Usage](#usage) • [Privacy](#privacy)
-
-</div>
 
 ## Features
 
@@ -39,61 +35,55 @@ A modern, intuitive photo management app that transforms your photo library orga
 - **Accessibility**: VoiceOver and Dynamic Type
 - **Responsive**: Adapts to all iOS devices
 
+## Requirements
+
+- iOS 15.0+
+- Xcode 13.0+
+- Swift 5.5+
+
 ## Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Jdeandrade22/PicSweep.git
-   ```
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/PicSweep.git
+```
 
-2. **Open in Xcode**
-   ```bash
-   cd PicSweep
-   open PicSweep.xcodeproj
-   ```
+2. Open the project in Xcode:
+```bash
+cd PicSweep
+xed .
+```
 
-3. **Build and Run**
-   - Select your target device
-   - Press ⌘R or click the Run button
+3. Build and run the project in Xcode
 
 ## Usage
 
-1. **Launch & Permissions**
-   - Open PicSweep
-   - Grant photo library access when prompted
-
-2. **Organize Photos**
-   - Swipe right to keep
-   - Swipe left to delete
-   - Tap for details
-   - Use category buttons
-
-3. **Advanced Features**
-   - Toggle focus mode
-   - View progress
-   - Shuffle photos
-   - Check locations
+1. Launch PicSweep
+2. Grant photo library access when prompted
+3. Swipe right to keep photos
+4. Swipe left to delete photos
+5. Use batch operations for efficient organization
 
 ## Privacy
 
-Your privacy is our priority. PicSweep:
-- Processes all photos locally on your device
-- Never uploads your photos
-- Requires only photo library access
-- Stores settings securely
+PicSweep prioritizes your privacy:
+- All processing happens locally on your device
+- No data is sent to external servers
+- Photo library access is optional and can be revoked
 
 ## Contributing
 
-We welcome contributions! Please:
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Version History
+
+- v3.0.0: Major UI overhaul with SwiftUI, improved performance
+- v2.0.0: Added batch operations and smart categorization
+- v1.0.0: Initial release with basic swipe functionality
 
 ---
 
