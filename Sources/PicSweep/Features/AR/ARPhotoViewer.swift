@@ -1,3 +1,4 @@
+#if !DISABLE_ARKIT
 import SwiftUI
 import ARKit
 import RealityKit
@@ -60,4 +61,34 @@ struct ARPhotoView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {}
-} 
+}
+#else
+// Stub implementation for macOS
+import SwiftUI
+
+class ARPhotoViewer: ObservableObject {
+    @Published var isARActive = false
+    @Published var currentPhoto: Photo?
+    
+    func startARSession() {
+        // No-op on macOS
+    }
+    
+    func stopARSession() {
+        // No-op on macOS
+    }
+    
+    func placePhotoInSpace(_ photo: Photo) {
+        // No-op on macOS
+    }
+}
+
+struct ARPhotoView: View {
+    let viewer: ARPhotoViewer
+    
+    var body: some View {
+        Text("AR features not available on macOS")
+            .foregroundColor(.secondary)
+    }
+}
+#endif 

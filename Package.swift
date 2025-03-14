@@ -4,7 +4,8 @@ import PackageDescription
 let package = Package(
     name: "PicSweep",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v15),
+        .macOS(.v13)  // Added for CI build support
     ],
     products: [
         .library(
@@ -26,6 +27,7 @@ let package = Package(
             swiftSettings: [
                 .define("DEBUG", .when(configuration: .debug)),
                 .define("RELEASE", .when(configuration: .release)),
+                .define("DISABLE_ARKIT", .when(platform: .macOS))  // Disable ARKit on macOS
             ]
         ),
         .testTarget(
@@ -35,7 +37,8 @@ let package = Package(
             swiftSettings: [
                 .define("TESTING", .when(configuration: .debug)),
                 .enableUpcomingFeature("BareSlashRegexLiterals"),
-                .enableExperimentalFeature("StrictConcurrency")
+                .enableExperimentalFeature("StrictConcurrency"),
+                .define("DISABLE_ARKIT", .when(platform: .macOS))  // Disable ARKit on macOS
             ]
         ),
     ]
