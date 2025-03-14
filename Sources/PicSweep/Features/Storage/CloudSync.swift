@@ -21,7 +21,15 @@ class CloudSync: ObservableObject {
     func fetchPhotos() async throws -> [Photo] {
         let query = CKQuery(recordType: "Photo", predicate: NSPredicate(value: true))
         let result = try await database.records(matching: query)
-        return try result.matchResults.compactMap { try createPhoto(from: $0.1.record) }
+        return try result.matchResults.compactMap { (id, result) -> Photo? in
+            switch result {
+            case .success(let record):
+                return try createPhoto(from: record)
+            case .failure(let error):
+                logger.error("Failed to fetch record: \(error)")
+                return nil
+            }
+        }
     }
     
     func deletePhoto(_ photo: Photo) async throws {

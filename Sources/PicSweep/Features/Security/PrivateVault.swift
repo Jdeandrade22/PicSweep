@@ -7,7 +7,40 @@ import Logging
 import UIKit
 #elseif os(macOS)
 import AppKit
+import CoreImage
 #endif
+
+// Simple KeychainWrapper implementation
+class KeychainWrapper {
+    static let standard = KeychainWrapper()
+    private init() {}
+    
+    func set(_ data: Data, forKey key: String) throws {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key,
+            kSecValueData as String: data
+        ]
+        
+        SecItemDelete(query as CFDictionary)
+        let status = SecItemAdd(query as CFDictionary, nil)
+        guard status == errSecSuccess else {
+            throw VaultError.keychainError
+        }
+    }
+    
+    func data(forKey key: String) -> Data? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key,
+            kSecReturnData as String: true
+        ]
+        
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        return (status == errSecSuccess) ? (result as? Data) : nil
+    }
+}
 
 class PrivateVault: ObservableObject {
     static let shared = PrivateVault()
@@ -43,13 +76,15 @@ class PrivateVault: ObservableObject {
     
     func encryptPhoto(_ photo: Photo) throws -> Data {
         #if os(iOS)
-        guard let imageData = photo.image?.jpegData(compressionQuality: 0.8) else {
+        guard let image = photo.platformImage as? UIImage,
+              let imageData = image.jpegData(compressionQuality: 0.8) else {
             throw VaultError.invalidImageData
         }
         #else
-        guard let cgImage = photo.image?.cgImage(forProposedRect: nil, context: nil, hints: nil),
+        guard let image = photo.platformImage as? NSImage,
+              let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: [:]),
               let imageRep = NSBitmapImageRep(cgImage: cgImage),
-              let imageData = imageRep.representation(using: .jpeg, properties: [.compressionFactor: 0.8]) else {
+              let imageData = imageRep.representation(using: NSBitmapImageRep.FileType.jpeg, properties: [NSBitmapImageRep.PropertyKey.compressionFactor: NSNumber(value: 0.8)]) else {
             throw VaultError.invalidImageData
         }
         #endif
@@ -176,4 +211,5 @@ enum VaultError: Error {
     case authenticationFailed
     case encryptionFailed
     case decryptionFailed
+    case keychainError
 } 
