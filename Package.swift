@@ -27,7 +27,7 @@ let package = Package(
             swiftSettings: [
                 .define("DEBUG", .when(configuration: .debug)),
                 .define("RELEASE", .when(configuration: .release)),
-                .define("DISABLE_ARKIT", .when(platform: .macOS))  // Disable ARKit on macOS
+                .define("DISABLE_ARKIT", .when(platforms: [.macOS]))  // Fixed syntax for platform condition
             ]
         ),
         .testTarget(
@@ -38,7 +38,7 @@ let package = Package(
                 .define("TESTING", .when(configuration: .debug)),
                 .enableUpcomingFeature("BareSlashRegexLiterals"),
                 .enableExperimentalFeature("StrictConcurrency"),
-                .define("DISABLE_ARKIT", .when(platform: .macOS))  // Disable ARKit on macOS
+                .define("DISABLE_ARKIT", .when(platforms: [.macOS]))  // Fixed syntax for platform condition
             ]
         ),
     ]
