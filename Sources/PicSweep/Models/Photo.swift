@@ -2,10 +2,8 @@ import Foundation
 
 #if os(iOS)
 import UIKit
-public typealias PlatformImage = UIImage
 #elseif os(macOS)
 import AppKit
-public typealias PlatformImage = NSImage
 #endif
 
 public struct Photo: Identifiable, Codable {
