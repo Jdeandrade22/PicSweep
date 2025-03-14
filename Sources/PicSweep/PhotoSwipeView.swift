@@ -10,13 +10,11 @@ import Photos
 
 class PhotoLibraryManager: ObservableObject {
     @Published var photos: [UIImage] = []
-    @Published var photoAssets: [PHAsset] = [] // To keep track of the assets
+    @Published var photoAssets: [PHAsset] = []
     @Published var totalPhotos: Int = 0
     @Published var processedPhotos: Int = 0
-    @Published var categories: [String: [PHAsset]] = [:] // Store categorized photos
 
     func fetchPhotos() {
-        // Clear existing photos before fetching new ones
         DispatchQueue.main.async {
             self.photos.removeAll()
             self.photoAssets.removeAll()
@@ -29,24 +27,19 @@ class PhotoLibraryManager: ObservableObject {
                 fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
                 let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
                 
-                // Create arrays to store assets and images temporarily
                 var tempAssets: [PHAsset] = []
                 var tempImages: [UIImage] = []
                 
-                // First, collect all assets
                 fetchResult.enumerateObjects { asset, _, _ in
                     tempAssets.append(asset)
                 }
                 
-                // Set total photos count
                 DispatchQueue.main.async {
                     self.totalPhotos = tempAssets.count
                 }
                 
-                // Shuffle the assets array
                 tempAssets.shuffle()
                 
-                // Now process the shuffled assets
                 for asset in tempAssets {
                     let imageManager = PHImageManager.default()
                     let targetSize = CGSize(width: 300, height: 300)
@@ -66,44 +59,28 @@ class PhotoLibraryManager: ObservableObject {
             }
         }
     }
-
-    func categorizePhoto(_ asset: PHAsset, category: String) {
-        if categories[category] == nil {
-            categories[category] = []
-        }
-        categories[category]?.append(asset)
-    }
 }
 
-// PhotoSwipeView: Displays photos and allows swiping
 struct PhotoSwipeView: View {
     @StateObject private var photoLibraryManager = PhotoLibraryManager()
     @State private var currentIndex = 0
-    @State private var showPhotoInfo = false
-    @State private var isFocusMode = false
-    @State private var showCategories = false
-    @State private var selectedCategory: String?
     @State private var dragOffset: CGFloat = 0
-    @State private var showGestureGuide = true
     @State private var showDeleteAlert = false
     @State private var showErrorAlert = false
     @State private var errorMessage = ""
     
-    private let categories = ["Keep", "Delete", "Family", "Work", "Travel", "Food"]
-    
     var body: some View {
         VStack {
             if !photoLibraryManager.photos.isEmpty {
-                if !isFocusMode {
-                    // Progress bar
-                    ProgressView(value: Double(photoLibraryManager.processedPhotos), total: Double(photoLibraryManager.totalPhotos))
-                        .padding()
-                    
-                    // Photo count
-                    Text("\(photoLibraryManager.processedPhotos) of \(photoLibraryManager.totalPhotos) photos")
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                }
+                // Progress bar
+                ProgressView(value: Double(photoLibraryManager.processedPhotos), total: Double(photoLibraryManager.totalPhotos))
+                    .tint(Theme.primary)
+                    .padding()
+                
+                // Photo count
+                Text("\(photoLibraryManager.processedPhotos) of \(photoLibraryManager.totalPhotos) photos")
+                    .font(.caption)
+                    .foregroundColor(Theme.secondaryText)
                 
                 ZStack {
                     Image(uiImage: photoLibraryManager.photos[currentIndex])
@@ -118,94 +95,50 @@ struct PhotoSwipeView: View {
                                     dragOffset = value.translation.width
                                 }
                                 .onEnded { value in
-                                    withAnimation {
+                                    withAnimation(.spring()) {
                                         if value.translation.width > 100 {
-                                            // Save logic
                                             nextPhoto()
                                         } else if value.translation.width < -100 {
-                                            // Delete logic
                                             deletePhoto()
-                                            nextPhoto()
                                         }
                                         dragOffset = 0
                                     }
                                 }
                         )
                     
-                    if showGestureGuide && !isFocusMode {
-                        VStack {
+                    // Gesture guide
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Image(systemName: "arrow.left")
+                                .foregroundColor(Theme.deleteColor)
                             Spacer()
-                            HStack {
-                                Image(systemName: "arrow.left")
-                                    .foregroundColor(.red)
-                                Spacer()
-                                Image(systemName: "arrow.right")
-                                    .foregroundColor(.green)
-                            }
-                            .padding()
-                            .background(Color.black.opacity(0.5))
+                            Image(systemName: "arrow.right")
+                                .foregroundColor(Theme.keepColor)
                         }
+                        .padding()
+                        .background(Color.black.opacity(0.5))
                     }
                 }
                 
-                if !isFocusMode {
-                    if showPhotoInfo {
-                        PhotoInfoView(asset: photoLibraryManager.photoAssets[currentIndex])
-                            .transition(.move(edge: .bottom))
-                    }
-                    
-                    // Category buttons
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 10) {
-                            ForEach(categories, id: \.self) { category in
-                                Button(action: {
-                                    photoLibraryManager.categorizePhoto(photoLibraryManager.photoAssets[currentIndex], category: category)
-                                    nextPhoto()
-                                }) {
-                                    Text(category)
-                                        .padding(.horizontal, 15)
-                                        .padding(.vertical, 8)
-                                        .background(selectedCategory == category ? Color.blue : Color.gray.opacity(0.3))
-                                        .foregroundColor(selectedCategory == category ? .white : .primary)
-                                        .cornerRadius(20)
-                                }
-                            }
-                        }
-                        .padding()
-                    }
-                    
-                    // Control buttons
-                    HStack(spacing: 20) {
-                        Button(action: {
-                            withAnimation {
-                                isFocusMode.toggle()
-                            }
-                        }) {
-                            Image(systemName: isFocusMode ? "eye.slash.fill" : "eye.fill")
-                                .font(.title2)
-                        }
-                        
-                        Button(action: {
+                // Control buttons
+                HStack(spacing: 20) {
+                    Button(action: {
+                        withAnimation(.spring()) {
                             photoLibraryManager.fetchPhotos()
                             currentIndex = 0
-                        }) {
-                            Image(systemName: "shuffle")
-                                .font(.title2)
                         }
-                        
-                        Button(action: {
-                            withAnimation {
-                                showGestureGuide.toggle()
-                            }
-                        }) {
-                            Image(systemName: showGestureGuide ? "hand.raised.fill" : "hand.raised")
-                                .font(.title2)
-                        }
+                    }) {
+                        Image(systemName: "shuffle")
+                            .font(.title2)
+                            .foregroundColor(Theme.primary)
                     }
-                    .padding(.bottom)
                 }
+                .padding(.bottom)
             } else {
                 Text("No photos available")
+                    .font(.system(.body, design: .rounded))
+                    .foregroundColor(Theme.secondaryText)
             }
         }
         .onAppear {
@@ -227,14 +160,11 @@ struct PhotoSwipeView: View {
     }
     
     private func nextPhoto() {
-        // Ensure there are photos to display before modifying the index
         guard !photoLibraryManager.photos.isEmpty else { return }
-        
-        // Update the currentIndex safely
         if currentIndex < photoLibraryManager.photos.count - 1 {
             currentIndex += 1
         } else {
-            currentIndex = 0 // Loop back to the first photo if needed
+            currentIndex = 0
         }
     }
     
@@ -243,44 +173,23 @@ struct PhotoSwipeView: View {
     }
     
     private func performDelete() {
-        // Ensure there's a photo to delete
         guard !photoLibraryManager.photoAssets.isEmpty else { return }
         
-        // Get the current photo's asset
         let assetToDelete = photoLibraryManager.photoAssets[currentIndex]
         
-        // Perform the deletion
         PHPhotoLibrary.shared().performChanges({
-            PHAssetChangeRequest.deleteAssets([assetToDelete] as NSArray)
+            PHAssetChangeRequest.deleteAssets([assetToDelete] as NSFastEnumeration)
         }) { success, error in
-            if success {
-                DispatchQueue.main.async {
-                    // Remove the photo from the UI list
-                    photoLibraryManager.photos.remove(at: currentIndex)
-                    photoLibraryManager.photoAssets.remove(at: currentIndex)
-                    
-                    // Adjust the currentIndex if necessary to prevent "Index out of range"
-                    if currentIndex >= photoLibraryManager.photos.count {
-                        currentIndex = photoLibraryManager.photos.count - 1
-                    }
-                    
-                    // If no photos are left, reset to the first photo (or handle empty state)
-                    if photoLibraryManager.photos.isEmpty {
-                        currentIndex = 0
-                    }
-                }
-            } else {
-                DispatchQueue.main.async {
-                    errorMessage = error?.localizedDescription ?? "Failed to delete photo"
-                    showErrorAlert = true
+            DispatchQueue.main.async {
+                if success {
+                    self.photoLibraryManager.photos.remove(at: self.currentIndex)
+                    self.photoLibraryManager.photoAssets.remove(at: self.currentIndex)
+                    self.nextPhoto()
+                } else {
+                    self.errorMessage = error?.localizedDescription ?? "Failed to delete photo"
+                    self.showErrorAlert = true
                 }
             }
-        }
-    }
-    
-    struct ContentView_Previews: PreviewProvider {
-        static var previews: some View {
-            ContentView()
         }
     }
 }

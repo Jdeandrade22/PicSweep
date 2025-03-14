@@ -15,6 +15,11 @@ struct Theme {
     static let cardBackground = Color(.secondarySystemBackground)
     static let text = Color(.label)
     static let secondaryText = Color(.secondaryLabel)
+    static let deleteColor = Color.red
+    static let keepColor = Color.green
+    
+    static let cardShadow = Color.black.opacity(0.1)
+    static let animationDuration: Double = 0.3
 }
 
 struct ContentView: View {
@@ -35,7 +40,7 @@ struct ContentView: View {
                             .foregroundColor(Theme.primary)
                             .scaleEffect(isAnimating ? 1.05 : 1.0)
                         
-                        Text("Organize your memories")
+                        Text("Organize your photos")
                             .font(.system(.body, design: .rounded))
                             .foregroundColor(Theme.secondaryText)
                     }
@@ -45,19 +50,19 @@ struct ContentView: View {
                     VStack(spacing: 12) {
                         HStack {
                             Image(systemName: "arrow.left")
-                                .foregroundColor(.red)
+                                .foregroundColor(Theme.deleteColor)
                             Text("Delete")
                                 .font(.system(.body, design: .rounded))
                             Spacer()
                             Text("Keep")
                                 .font(.system(.body, design: .rounded))
                             Image(systemName: "arrow.right")
-                                .foregroundColor(.green)
+                                .foregroundColor(Theme.keepColor)
                         }
                         .padding()
                         .background(Theme.cardBackground)
                         .cornerRadius(15)
-                        .shadow(radius: 5)
+                        .shadow(color: Theme.cardShadow, radius: 5, x: 0, y: 2)
                     }
                     .padding(.horizontal)
                     
@@ -66,25 +71,23 @@ struct ContentView: View {
                         .frame(maxHeight: .infinity)
                         .padding()
                     
-                    // Bottom Bar
-                    HStack(spacing: 20) {
-                        Button(action: {
-                            withAnimation(.spring()) {
-                                showSettings.toggle()
-                            }
-                        }) {
-                            HStack {
-                                Image(systemName: "gear")
-                                Text("Settings")
-                            }
-                            .font(.system(.body, design: .rounded))
-                            .foregroundColor(Theme.text)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Theme.cardBackground)
-                            .cornerRadius(15)
-                            .shadow(radius: 5)
+                    // Settings Button
+                    Button(action: {
+                        withAnimation(.spring()) {
+                            showSettings.toggle()
                         }
+                    }) {
+                        HStack {
+                            Image(systemName: "gear")
+                            Text("Settings")
+                        }
+                        .font(.system(.body, design: .rounded))
+                        .foregroundColor(Theme.text)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Theme.cardBackground)
+                        .cornerRadius(15)
+                        .shadow(color: Theme.cardShadow, radius: 5, x: 0, y: 2)
                     }
                     .padding(.horizontal)
                     .padding(.bottom, 20)
@@ -105,27 +108,15 @@ struct ContentView: View {
 
 struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
-    @State private var notificationsEnabled = false
-    @State private var darkModeEnabled = false
     
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Preferences")) {
-                    Toggle(isOn: $notificationsEnabled) {
-                        Label("Enable Notifications", systemImage: "bell.fill")
-                    }
-                    
-                    Toggle(isOn: $darkModeEnabled) {
-                        Label("Dark Mode", systemImage: "moon.fill")
-                    }
-                }
-                
                 Section(header: Text("About")) {
                     HStack {
                         Label("Version", systemImage: "info.circle.fill")
                         Spacer()
-                        Text("1.0.0")
+                        Text("5.0.0")
                             .foregroundColor(.secondary)
                     }
                     
