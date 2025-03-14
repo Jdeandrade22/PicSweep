@@ -93,7 +93,9 @@ struct ContentView: View {
                     .padding(.bottom, 20)
                 }
             }
+            #if os(iOS)
             .navigationBarHidden(true)
+            #endif
             .sheet(isPresented: $showSettings) {
                 SettingsView()
             }
@@ -126,6 +128,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -134,6 +137,15 @@ struct SettingsView: View {
                     }
                 }
             }
+            #else
+            .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+            #endif
         }
     }
 }

@@ -1,97 +1,114 @@
 import Foundation
+import Logging
+#if canImport(Vision)
 import Vision
-import CoreML
+#endif
+#if os(iOS)
+import UIKit
+typealias PlatformImage = UIImage
+#elseif os(macOS)
+import AppKit
+typealias PlatformImage = NSImage
+#endif
 
-class PhotoAnalyzer {
-    static let shared = PhotoAnalyzer()
-    private let logger = Logger(subsystem: "com.picsweep", category: "PhotoAnalyzer")
+struct PhotoAnalysis: Codable {
+    var faces: [Face]
+    var scenes: [Scene]
+    var objects: [Object]
+    var text: String
+}
+
+struct Face: Codable {
+    var bounds: CGRect
+    var confidence: Float
+}
+
+struct Scene: Codable {
+    var identifier: String
+    var confidence: Float
+}
+
+struct Object: Codable {
+    var identifier: String
+    var confidence: Float
+    var bounds: CGRect
+}
+
+class PhotoAnalyzer: ObservableObject {
+    private let logger = Logger(label: "com.picsweep.PhotoAnalyzer")
     
-    private init() {}
-    
-    func analyzePhoto(_ image: UIImage) async throws -> PhotoAnalysis {
-        var analysis = PhotoAnalysis()
+    func analyzePhoto(_ image: PlatformImage) async throws -> PhotoAnalysis {
+        #if os(macOS)
+        logger.warning("Photo analysis is limited on macOS")
+        return PhotoAnalysis(faces: [], scenes: [], objects: [], text: "")
+        #else
+        async let faces = try detectFaces(in: image)
+        async let scenes = try detectScenes(in: image)
+        async let objects = try detectObjects(in: image)
+        async let text = try recognizeText(in: image)
         
-        // Face detection
-        if let faces = try? await detectFaces(in: image) {
-            analysis.faces = faces
-        }
-        
-        // Scene detection
-        if let scenes = try? await detectScenes(in: image) {
-            analysis.scenes = scenes
-        }
-        
-        // Object detection
-        if let objects = try? await detectObjects(in: image) {
-            analysis.objects = objects
-        }
-        
-        // Text recognition
-        if let text = try? await recognizeText(in: image) {
-            analysis.text = text
-        }
-        
-        return analysis
+        return try await PhotoAnalysis(
+            faces: faces,
+            scenes: scenes,
+            objects: objects,
+            text: text
+        )
+        #endif
     }
     
-    private func detectFaces(in image: UIImage) async throws -> [Face] {
+    #if !os(macOS)
+    private func detectFaces(in image: PlatformImage) async throws -> [Face] {
+        guard let cgImage = image.cgImage else {
+            throw NSError(domain: "PhotoAnalyzer", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to get CGImage"])
+        }
+        
         let request = VNDetectFaceRectanglesRequest()
-        let handler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
+        let handler = VNImageRequestHandler(cgImage: cgImage)
         try handler.perform([request])
         
-        return request.results?.map { result in
-            Face(bounds: result.boundingBox, confidence: result.confidence)
+        return request.results?.map { observation in
+            Face(bounds: observation.boundingBox, confidence: observation.confidence)
         } ?? []
     }
     
-    private func detectScenes(in image: UIImage) async throws -> [Scene] {
+    private func detectScenes(in image: PlatformImage) async throws -> [Scene] {
+        guard let cgImage = image.cgImage else {
+            throw NSError(domain: "PhotoAnalyzer", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to get CGImage"])
+        }
+        
         let request = VNClassifyImageRequest()
-        let handler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
+        let handler = VNImageRequestHandler(cgImage: cgImage)
         try handler.perform([request])
         
-        return request.results?.map { result in
-            Scene(identifier: result.identifier, confidence: result.confidence)
+        return request.results?.map { observation in
+            Scene(identifier: observation.identifier, confidence: observation.confidence)
         } ?? []
     }
     
-    private func detectObjects(in image: UIImage) async throws -> [Object] {
-        let request = VNDetectObjectsRequest()
-        let handler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
+    private func detectObjects(in image: PlatformImage) async throws -> [Object] {
+        guard let cgImage = image.cgImage else {
+            throw NSError(domain: "PhotoAnalyzer", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to get CGImage"])
+        }
+        
+        let request = VNDetectRectanglesRequest()
+        let handler = VNImageRequestHandler(cgImage: cgImage)
         try handler.perform([request])
         
-        return request.results?.map { result in
-            Object(bounds: result.boundingBox, label: result.labels.first?.identifier ?? "", confidence: result.confidence)
+        return request.results?.map { observation in
+            Object(identifier: "rectangle", confidence: observation.confidence, bounds: observation.boundingBox)
         } ?? []
     }
     
-    private func recognizeText(in image: UIImage) async throws -> String {
+    private func recognizeText(in image: PlatformImage) async throws -> String {
+        guard let cgImage = image.cgImage else {
+            throw NSError(domain: "PhotoAnalyzer", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to get CGImage"])
+        }
+        
         let request = VNRecognizeTextRequest()
-        let handler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
+        let handler = VNImageRequestHandler(cgImage: cgImage)
         try handler.perform([request])
         
-        return request.results?.map { $0.topCandidates(1).first?.string ?? "" }.joined(separator: " ") ?? ""
+        return request.results?.compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n") ?? ""
     }
-}
-
-struct PhotoAnalysis {
-    var faces: [Face] = []
-    var scenes: [Scene] = []
-    var objects: [Object] = []
-    var text: String = ""
-}
-
-struct Face {
-    let bounds: CGRect
-    let confidence: Float
-}
-
-struct Scene {
-    let identifier: String
-    let confidence: Float
-}
-
-struct Object {
-    let bounds: CGRect
-    let label: String
-    let confidence: Float
+    #endif
 } 
