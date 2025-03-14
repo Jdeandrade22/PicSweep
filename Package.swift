@@ -12,12 +12,14 @@ let package = Package(
             targets: ["PicSweep"]),
     ],
     dependencies: [
-        // Add any dependencies here if needed
+        .package(url: "https://github.com/apple/swift-collections.git", from: "0.0.1")
     ],
     targets: [
         .target(
             name: "PicSweep",
-            dependencies: []),
+            dependencies: [
+                .product(name: "Collections", package: "swift-collections")
+            ]),
         .testTarget(
             name: "PicSweepTests",
             dependencies: ["PicSweep"]),
