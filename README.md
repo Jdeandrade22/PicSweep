@@ -30,11 +30,6 @@ A modern, cross-platform photo management application built with SwiftUI that he
 - Cross-device synchronization
 - Metadata preservation
 
-### AR Features (iOS only)
-- AR photo viewing experience
-- Interactive photo placement in space
-- Real-world photo visualization
-
 ## Requirements
 
 ### iOS
@@ -76,7 +71,6 @@ PicSweep follows a modern SwiftUI architecture with:
 - `PrivateVault`: Secure photo storage
 - `CloudSync`: iCloud integration
 - `PhotoOwnership`: Blockchain-based ownership tracking
-- `ARPhotoViewer`: AR visualization (iOS only)
 
 ## Testing
 
@@ -86,7 +80,6 @@ The project includes comprehensive unit tests covering:
 - Security features
 - Cloud sync operations
 - Ownership verification
-- AR features (iOS only)
 
 Run tests using:
 ```bash
