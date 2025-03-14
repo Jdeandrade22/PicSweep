@@ -12,7 +12,7 @@ let package = Package(
             targets: ["PicSweep"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-log.git", from: "0.5.0"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.5.3"),
     ],
     targets: [
         .target(
