@@ -40,7 +40,8 @@ let package = Package(
             path: "Tests/PicSweepTests",
             swiftSettings: [
                 .define("DEBUG", .when(configuration: .debug)),
-                .define("RELEASE", .when(configuration: .release))
+                .define("RELEASE", .when(configuration: .release)),
+                .define("TESTING", .when(configuration: .debug))
             ])
     ]
 ) 

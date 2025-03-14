@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 @testable import PicSweep
 
 final class PicSweepTests: XCTestCase {
@@ -22,5 +23,20 @@ final class PicSweepTests: XCTestCase {
         measure {
             // Put the code you want to measure the time of here.
         }
+    }
+    
+    func testImageCreation() throws {
+        let image = createTestImage()
+        XCTAssertNotNil(image)
+        XCTAssertEqual(image.size.width, 100)
+        XCTAssertEqual(image.size.height, 100)
+    }
+    
+    func testPhotoCreation() throws {
+        let photo = createTestPhoto()
+        XCTAssertNotNil(photo)
+        XCTAssertNotNil(photo.id)
+        XCTAssertNotNil(photo.metadata)
+        XCTAssertNotNil(photo.analysis)
     }
 } 
