@@ -21,7 +21,7 @@ class CloudSync: ObservableObject {
     func fetchPhotos() async throws -> [Photo] {
         let query = CKQuery(recordType: "Photo", predicate: NSPredicate(value: true))
         let result = try await database.records(matching: query)
-        return try result.matchResults.compactMap { try createPhoto(from: $0.1) }
+        return try result.matchResults.compactMap { try createPhoto(from: $0.1.record) }
     }
     
     func deletePhoto(_ photo: Photo) async throws {
@@ -32,19 +32,28 @@ class CloudSync: ObservableObject {
     
     private func createRecord(from photo: Photo) throws -> CKRecord {
         let record = CKRecord(recordType: "Photo")
-        record["id"] = photo.id.uuidString
-        record["url"] = photo.url
-        record["metadata"] = photo.metadata
-        record["createdAt"] = photo.createdAt
+        record.setValue(photo.id.uuidString, forKey: "id")
+        record.setValue(photo.url.absoluteString, forKey: "urlString")
+        
+        // Convert metadata to a JSON string to ensure CKRecord compatibility
+        let jsonData = try JSONSerialization.data(withJSONObject: photo.metadata)
+        if let jsonString = String(data: jsonData, encoding: .utf8) {
+            record.setValue(jsonString, forKey: "metadata")
+        }
+        
+        record.setValue(photo.createdAt, forKey: "createdAt")
         return record
     }
     
     private func createPhoto(from record: CKRecord) throws -> Photo {
-        guard let idString = record["id"] as? String,
+        guard let idString = record.value(forKey: "id") as? String,
               let id = UUID(uuidString: idString),
-              let url = record["url"] as? URL,
-              let metadata = record["metadata"] as? [String: String],
-              let createdAt = record["createdAt"] as? Date else {
+              let urlString = record.value(forKey: "urlString") as? String,
+              let url = URL(string: urlString),
+              let metadataString = record.value(forKey: "metadata") as? String,
+              let metadataData = metadataString.data(using: .utf8),
+              let metadata = try? JSONSerialization.jsonObject(with: metadataData) as? [String: String],
+              let createdAt = record.value(forKey: "createdAt") as? Date else {
             throw CloudError.invalidRecord
         }
         
