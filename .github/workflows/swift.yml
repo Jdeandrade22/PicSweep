@@ -13,23 +13,16 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     
     - name: Set up Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: '15.4'
     
-    - name: Set up Swift
-      uses: fwal/setup-swift@v1
-      with:
-        swift-version: "5.5"
-    
     - name: Build
-      run: |
-        xcodebuild -scheme PicSweep -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.2' clean build
+      run: swift build -v
     
     - name: Run tests
-      run: |
-        xcodebuild -scheme PicSweep -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.2' test
+      run: swift test -v
 
