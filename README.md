@@ -1,41 +1,69 @@
-# PicSweeper
+# PicSweep
 
-
-**Date:** January 8, 2025  
-
-## Overview
-PicSweeper is an iOS application that allows users to efficiently manage their photo library using swipe gestures. Users can **swipe right** to save a photo or **swipe left** to delete it, streamlining the organization of their gallery.
+A modern iOS photo management app that helps you organize your photo library with intuitive swipe gestures and smart categorization.
 
 ## Features
-- **Swipe-based Photo Management**: Swipe right to keep a photo, swipe left to delete it.
-- **Simple and Intuitive UI**: Built with SwiftUI for a responsive and modern experience.
-- **Photo Library Access**: Fetches and displays recent images from the device’s gallery.
-- **Shuffling and Navigation**: Enables looping through photos and shuffling them for better browsing.
-- **Settings Panel**: Users can adjust app preferences through an integrated settings view.
+
+- **Intuitive Swipe Interface**
+  - Swipe right to keep photos
+  - Swipe left to delete photos
+  - Smooth animations and visual feedback
+  - Gesture guide overlay
+
+- **Smart Organization**
+  - Quick category assignment
+  - Custom categories (Family, Work, Travel, Food)
+  - Photo information display
+  - Location-based organization
+
+- **Enhanced User Experience**
+  - Focus mode for distraction-free viewing
+  - Progress tracking
+  - Photo shuffling
+  - Haptic feedback
+
+- **Safety Features**
+  - Confirmation dialogs for deletions
+  - Error handling
+  - Photo information display
+  - Location tracking
+
+## Requirements
+
+- iOS 15.0+
+- Xcode 13.0+
+- Swift 5.5+
 
 ## Installation
+
 1. Clone the repository:
-   ```sh
-   git clone https://github.com/Jdeandrade22/PicSweep
-   ```
-2. Open `PicSweeper.xcodeproj` in Xcode.
-3. Ensure your environment includes:
-   - Xcode 15 or later
-   - iOS 17 SDK
-4. Build and run the app on a compatible iOS device or simulator.
+```bash
+git clone https://github.com/yourusername/PicSweep.git
+```
+
+2. Open `PicSweep.xcodeproj` in Xcode
+
+3. Build and run the project
 
 ## Usage
-1. Launch the application.
-2. Swipe **right** to save a photo to your library.
-3. Swipe **left** to delete a photo permanently.
-4. Open **Settings** to customize app preferences.
 
-## Dependencies
-- SwiftUI for UI components.
-- Photos framework for accessing and managing the photo library.
+1. Launch the app
+2. Grant photo library access when prompted
+3. Use swipe gestures to organize photos:
+   - Swipe right to keep
+   - Swipe left to delete
+4. Use category buttons to organize photos
+5. Toggle focus mode for distraction-free viewing
+6. View photo details by tapping the photo
+
+## Privacy
+
+This app requires access to your photo library to function. All photo processing is done locally on your device.
 
 ## License
-This project is licensed under the MIT License - see the [MIT License](https://opensource.org/licenses/MIT) for details.
 
-## Author
-Developed by Jordan.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
