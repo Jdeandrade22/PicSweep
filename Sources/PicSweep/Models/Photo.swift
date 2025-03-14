@@ -1,10 +1,11 @@
 import Foundation
-import PlatformTypes
 
 #if os(iOS)
 import UIKit
+public typealias PlatformImage = UIImage
 #elseif os(macOS)
 import AppKit
+public typealias PlatformImage = NSImage
 #endif
 
 public struct Photo: Identifiable, Codable {
@@ -49,10 +50,4 @@ public struct Photo: Identifiable, Codable {
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(metadata, forKey: .metadata)
     }
-}
-
-#if os(iOS)
-public typealias PlatformImage = UIImage
-#elseif os(macOS)
-public typealias PlatformImage = NSImage
-#endif 
+} 
