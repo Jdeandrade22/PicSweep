@@ -1,16 +1,19 @@
 import Foundation
-import CryptoKit
+import Logging
 
-class PhotoOwnership {
-    static let shared = PhotoOwnership()
-    private let logger = Logger(subsystem: "com.picsweep", category: "PhotoOwnership")
-    
-    private init() {}
+struct OwnershipRecord: Codable {
+    let photoId: String
+    let ownerHash: String
+    let timestamp: Date
+}
+
+class PhotoOwnership: ObservableObject {
+    private let logger = Logger(label: "com.picsweep.PhotoOwnership")
     
     func generateOwnershipHash(for photo: Photo) throws -> String {
-        let photoData = try JSONEncoder().encode(photo)
-        let hash = SHA256.hash(data: photoData)
-        return hash.compactMap { String(format: "%02x", $0) }.joined()
+        // Simple hash generation for demo purposes
+        let data = "\(photo.id.uuidString)_\(photo.createdAt.timeIntervalSince1970)".data(using: .utf8)!
+        return data.base64EncodedString()
     }
     
     func verifyOwnership(photo: Photo, hash: String) throws -> Bool {
@@ -20,33 +23,19 @@ class PhotoOwnership {
     
     func createOwnershipRecord(for photo: Photo) throws -> OwnershipRecord {
         let hash = try generateOwnershipHash(for: photo)
-        let timestamp = Date()
-        
         return OwnershipRecord(
-            photoId: photo.id,
-            hash: hash,
-            timestamp: timestamp,
-            ownerId: UserDefaults.standard.string(forKey: "userId") ?? UUID().uuidString
+            photoId: photo.id.uuidString,
+            ownerHash: hash,
+            timestamp: Date()
         )
     }
     
-    func validateOwnershipRecord(_ record: OwnershipRecord) -> Bool {
-        // Verify timestamp is not in the future
-        guard record.timestamp <= Date() else { return false }
-        
-        // Verify hash matches photo
-        guard let photo = try? PhotoManager.shared.getPhoto(id: record.photoId),
-              let isValid = try? verifyOwnership(photo: photo, hash: record.hash) else {
+    func verifyRecord(_ record: OwnershipRecord, photoManager: PhotoManager) throws -> Bool {
+        guard let photo = try? photoManager.getPhoto(id: UUID(uuidString: record.photoId)) else {
+            logger.warning("Could not find photo for ownership record")
             return false
         }
         
-        return isValid
+        return try verifyOwnership(photo: photo, hash: record.ownerHash)
     }
-}
-
-struct OwnershipRecord: Codable {
-    let photoId: String
-    let hash: String
-    let timestamp: Date
-    let ownerId: String
 } 

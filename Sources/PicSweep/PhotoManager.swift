@@ -7,9 +7,12 @@
 
 import SwiftUI
 import Photos
+import Foundation
+import Logging
 
 public class PhotoManager: ObservableObject {
-    @Published var photos: [PHAsset] = []
+    private let logger = Logger(label: "com.picsweep.PhotoManager")
+    @Published private(set) var photos: [Photo] = []
     @Published var currentPhoto: UIImage?
     @Published var currentIndex: Int = 0
 
@@ -84,6 +87,28 @@ public class PhotoManager: ObservableObject {
 
         imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { image, _ in
             completion(image)
+        }
+    }
+
+    func getPhoto(id: UUID?) -> Photo? {
+        guard let id = id else { return nil }
+        return photos.first { $0.id == id }
+    }
+    
+    func addPhoto(_ photo: Photo) {
+        photos.append(photo)
+        logger.info("Added photo with ID: \(photo.id)")
+    }
+    
+    func removePhoto(_ photo: Photo) {
+        photos.removeAll { $0.id == photo.id }
+        logger.info("Removed photo with ID: \(photo.id)")
+    }
+    
+    func updatePhoto(_ photo: Photo) {
+        if let index = photos.firstIndex(where: { $0.id == photo.id }) {
+            photos[index] = photo
+            logger.info("Updated photo with ID: \(photo.id)")
         }
     }
 }

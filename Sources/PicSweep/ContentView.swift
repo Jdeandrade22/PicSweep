@@ -8,13 +8,26 @@
 import SwiftUI
 import Photos
 
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
+
 struct Theme {
     static let primary = Color("AccentColor")
     static let secondary = Color.orange
-    static let background = Color(.systemBackground)
-    static let cardBackground = Color(.secondarySystemBackground)
-    static let text = Color(.label)
-    static let secondaryText = Color(.secondaryLabel)
+    #if os(iOS)
+    static let background = Color(UIColor.systemBackground)
+    static let cardBackground = Color(UIColor.secondarySystemBackground)
+    static let text = Color(UIColor.label)
+    static let secondaryText = Color(UIColor.secondaryLabel)
+    #else
+    static let background = Color(NSColor.windowBackgroundColor)
+    static let cardBackground = Color(NSColor.controlBackgroundColor)
+    static let text = Color(NSColor.labelColor)
+    static let secondaryText = Color(NSColor.secondaryLabelColor)
+    #endif
     static let deleteColor = Color.red
     static let keepColor = Color.green
     
