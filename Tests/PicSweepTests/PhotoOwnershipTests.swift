@@ -40,6 +40,8 @@ final class PhotoOwnershipTests: XCTestCase {
     }
     
     func testOwnershipRecordValidation() throws {
+        photoManager.addPhoto(testPhoto)
+        
         let record = try photoOwnership.createOwnershipRecord(for: testPhoto)
         let isValid = try photoOwnership.verifyRecord(record, photoManager: photoManager)
         XCTAssertTrue(isValid)
