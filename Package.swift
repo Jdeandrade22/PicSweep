@@ -36,6 +36,11 @@ let package = Package(
             ]),
         .testTarget(
             name: "PicSweepTests",
-            dependencies: ["PicSweep"]),
+            dependencies: ["PicSweep"],
+            path: "Tests/PicSweepTests",
+            swiftSettings: [
+                .define("DEBUG", .when(configuration: .debug)),
+                .define("RELEASE", .when(configuration: .release))
+            ])
     ]
 ) 
