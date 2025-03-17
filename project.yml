@@ -4,6 +4,10 @@ options:
   deploymentTarget:
     iOS: 15.0
     macOS: 13.0
+  platforms:
+    iOS:
+      baseSDK: iOS
+      supportedPlatforms: [iphoneos, iphonesimulator]
 targets:
   PicSweep:
     type: application
@@ -23,6 +27,8 @@ targets:
         ENABLE_PREVIEWS: YES
         MARKETING_VERSION: 5.1.0
         CURRENT_PROJECT_VERSION: 1
+        SUPPORTED_PLATFORMS: iphoneos iphonesimulator
+        SDKROOT: iphoneos
     info:
       path: Sources/PicSweep/Info.plist
       properties:
