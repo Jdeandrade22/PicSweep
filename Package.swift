@@ -8,19 +8,15 @@ let package = Package(
         .macOS(.v13)  // Added for CI build support
     ],
     products: [
-        .library(
+        .executable(
             name: "PicSweep",
             targets: ["PicSweep"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.5.3"),
-    ],
+    dependencies: [],
     targets: [
-        .target(
+        .executableTarget(
             name: "PicSweep",
-            dependencies: [
-                .product(name: "Logging", package: "swift-log"),
-            ],
+            dependencies: [],
             resources: [
                 .process("Assets.xcassets")
             ],

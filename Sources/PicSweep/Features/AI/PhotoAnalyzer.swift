@@ -1,5 +1,4 @@
 import Foundation
-import Logging
 #if canImport(Vision)
 import Vision
 #endif
@@ -28,11 +27,8 @@ struct Object: Codable {
 }
 
 class PhotoAnalyzer: ObservableObject {
-    private let logger = Logger(label: "com.picsweep.PhotoAnalyzer")
-    
     func analyzePhoto(_ image: PlatformImage) async throws -> PhotoAnalysis {
         #if os(macOS)
-        logger.warning("Photo analysis is limited on macOS")
         return PhotoAnalysis(faces: [], scenes: [], objects: [], text: "")
         #else
         async let faces = try detectFaces(in: image)

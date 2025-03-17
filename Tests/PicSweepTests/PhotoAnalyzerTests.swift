@@ -21,37 +21,31 @@ final class PhotoAnalyzerTests: XCTestCase {
     func testPhotoAnalysis() async throws {
         let analysis = try await analyzer.analyzePhoto(image)
         
-        // Test faces
+        // Test all analysis components
         XCTAssertNotNil(analysis.faces)
-        if !analysis.faces.isEmpty {
-            let face = analysis.faces[0]
+        XCTAssertNotNil(analysis.scenes)
+        XCTAssertNotNil(analysis.objects)
+        XCTAssertNotNil(analysis.text)
+        
+        // Test confidence ranges
+        for face in analysis.faces {
             XCTAssertGreaterThanOrEqual(face.confidence, 0)
             XCTAssertLessThanOrEqual(face.confidence, 1)
             XCTAssertFalse(face.bounds.isEmpty)
         }
         
-        // Test scenes
-        XCTAssertNotNil(analysis.scenes)
-        if !analysis.scenes.isEmpty {
-            let scene = analysis.scenes[0]
+        for scene in analysis.scenes {
             XCTAssertFalse(scene.identifier.isEmpty)
             XCTAssertGreaterThanOrEqual(scene.confidence, 0)
             XCTAssertLessThanOrEqual(scene.confidence, 1)
         }
         
-        // Test objects
-        XCTAssertNotNil(analysis.objects)
-        if !analysis.objects.isEmpty {
-            let object = analysis.objects[0]
+        for object in analysis.objects {
             XCTAssertFalse(object.identifier.isEmpty)
             XCTAssertGreaterThanOrEqual(object.confidence, 0)
             XCTAssertLessThanOrEqual(object.confidence, 1)
             XCTAssertFalse(object.bounds.isEmpty)
         }
-        
-        // Test text recognition
-        XCTAssertNotNil(analysis.text)
-        // Text might be empty if no text is found in the image
     }
     
     #if os(macOS)

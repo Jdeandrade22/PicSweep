@@ -44,7 +44,6 @@ class PhotoLibraryManager: ObservableObject {
                 let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
                 
                 var tempAssets: [PHAsset] = []
-                var tempImages: [PlatformImage] = []
                 
                 fetchResult.enumerateObjects { asset, _, _ in
                     tempAssets.append(asset)

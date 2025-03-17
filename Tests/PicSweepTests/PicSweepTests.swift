@@ -19,26 +19,30 @@ final class PicSweepTests: XCTestCase {
         XCTAssertTrue(photoManager.photos.isEmpty)
     }
 
-    func testThemeColors() {
-        XCTAssertNotNil(Theme.primary)
-        XCTAssertNotNil(Theme.secondary)
-        XCTAssertNotNil(Theme.background)
-        XCTAssertNotNil(Theme.cardBackground)
-        XCTAssertNotNil(Theme.text)
-        XCTAssertNotNil(Theme.secondaryText)
-        XCTAssertNotNil(Theme.deleteColor)
-        XCTAssertNotNil(Theme.keepColor)
+    func testThemeConfiguration() {
+        let themeColors: [Color] = [
+            Theme.primary,
+            Theme.secondary,
+            Theme.background,
+            Theme.cardBackground,
+            Theme.text,
+            Theme.secondaryText,
+            Theme.deleteColor,
+            Theme.keepColor
+        ]
+        
+        for color in themeColors {
+            XCTAssertNotNil(color)
+        }
     }
     
-    func testPhotoAddAndRemove() {
+    func testPhotoManagement() {
         let photo = createTestPhoto()
         
-        // Test adding photo
         photoManager.addPhoto(photo)
         XCTAssertEqual(photoManager.photos.count, 1)
         XCTAssertEqual(photoManager.photos.first?.id, photo.id)
         
-        // Test removing photo
         photoManager.removePhoto(photo)
         XCTAssertTrue(photoManager.photos.isEmpty)
     }

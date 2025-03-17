@@ -8,10 +8,8 @@
 import SwiftUI
 import Photos
 import Foundation
-import Logging
 
 public class PhotoManager: ObservableObject {
-    private let logger = Logger(label: "com.picsweep.PhotoManager")
     @Published private(set) var photos: [Photo] = []
     @Published var currentPhoto: PlatformImage?
     @Published var currentIndex: Int = 0
@@ -121,18 +119,15 @@ public class PhotoManager: ObservableObject {
     
     func addPhoto(_ photo: Photo) {
         photos.append(photo)
-        logger.info("Added photo with ID: \(photo.id)")
     }
     
     func removePhoto(_ photo: Photo) {
         photos.removeAll { $0.id == photo.id }
-        logger.info("Removed photo with ID: \(photo.id)")
     }
     
     func updatePhoto(_ photo: Photo) {
         if let index = photos.firstIndex(where: { $0.id == photo.id }) {
             photos[index] = photo
-            logger.info("Updated photo with ID: \(photo.id)")
         }
     }
 }

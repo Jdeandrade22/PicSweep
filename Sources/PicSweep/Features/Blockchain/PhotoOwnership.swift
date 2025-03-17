@@ -1,5 +1,4 @@
 import Foundation
-import Logging
 
 struct OwnershipRecord: Codable {
     let photoId: String
@@ -8,8 +7,6 @@ struct OwnershipRecord: Codable {
 }
 
 class PhotoOwnership: ObservableObject {
-    private let logger = Logger(label: "com.picsweep.PhotoOwnership")
-    
     func generateOwnershipHash(for photo: Photo) throws -> String {
         // Simple hash generation for demo purposes
         let data = "\(photo.id.uuidString)_\(photo.createdAt.timeIntervalSince1970)".data(using: .utf8)!
@@ -32,7 +29,6 @@ class PhotoOwnership: ObservableObject {
     
     func verifyRecord(_ record: OwnershipRecord, photoManager: PhotoManager) throws -> Bool {
         guard let photo = photoManager.getPhoto(id: UUID(uuidString: record.photoId)) else {
-            logger.warning("Could not find photo for ownership record")
             return false
         }
         

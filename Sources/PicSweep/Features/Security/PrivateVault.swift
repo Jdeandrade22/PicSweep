@@ -1,7 +1,6 @@
 import Foundation
 import LocalAuthentication
 import CryptoKit
-import Logging
 
 #if os(iOS)
 import UIKit
@@ -44,7 +43,6 @@ class KeychainWrapper {
 
 class PrivateVault: ObservableObject {
     static let shared = PrivateVault()
-    private let logger = Logger(label: "com.picsweep.PrivateVault")
     private let keychain = KeychainWrapper.standard
     private let key: SymmetricKey
     
@@ -66,7 +64,6 @@ class PrivateVault: ObservableObject {
         var error: NSError?
         
         guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            logger.error("Biometric authentication not available: \(error?.localizedDescription ?? "Unknown error")")
             return false
         }
         

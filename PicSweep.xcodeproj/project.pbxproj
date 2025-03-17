@@ -1,0 +1,386 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0265A5F21D4A1F16CBA1738D /* PrivateVault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BCF9316D77D603DF93D43D /* PrivateVault.swift */; };
+		0F822B55B8936319A1C395F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63B3E6287967D9956C997D7 /* ContentView.swift */; };
+		137C1C5F5D2F109D3CD7C8ED /* PhotoAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A690EA9880D8D49CA369555 /* PhotoAnalyzer.swift */; };
+		24751F06C6BA60E2B66589B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F95622C294FA0640502669B3 /* Assets.xcassets */; };
+		39A9AF8EB69DDA4F446DEBB1 /* PlatformTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6756ED288F4678D8390422B /* PlatformTypes.swift */; };
+		6166C5D7B0552A75B9FA875C /* PicSweeperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A22DDB726499DF1553E4A9 /* PicSweeperApp.swift */; };
+		69FD14B2D55EA12684BA73EB /* PhotoSwipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DD6B535CAADE05C7E9B9B7 /* PhotoSwipeView.swift */; };
+		782EB881C452C5E607C7EEF4 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E337782C4390C33CF8E9B5 /* Photo.swift */; };
+		AD17F80C9C6F07F92D30FA87 /* PhotoOwnership.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B2AFE57F31EFD926CE2CD6 /* PhotoOwnership.swift */; };
+		D6C112D5D902F406FBBE2699 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64B4B97CB2325B016E8BF1B /* PhotoManager.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0A690EA9880D8D49CA369555 /* PhotoAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAnalyzer.swift; sourceTree = "<group>"; };
+		28949F7AC9B344ECB99B4D5A /* PicSweep.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PicSweep.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		45B2AFE57F31EFD926CE2CD6 /* PhotoOwnership.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoOwnership.swift; sourceTree = "<group>"; };
+		73BCF9316D77D603DF93D43D /* PrivateVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateVault.swift; sourceTree = "<group>"; };
+		8E756B96E3A364ED69AC2A03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A5E337782C4390C33CF8E9B5 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		C64B4B97CB2325B016E8BF1B /* PhotoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
+		C6A22DDB726499DF1553E4A9 /* PicSweeperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicSweeperApp.swift; sourceTree = "<group>"; };
+		D6756ED288F4678D8390422B /* PlatformTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformTypes.swift; sourceTree = "<group>"; };
+		E63B3E6287967D9956C997D7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F0DD6B535CAADE05C7E9B9B7 /* PhotoSwipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSwipeView.swift; sourceTree = "<group>"; };
+		F95622C294FA0640502669B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		3270830E30DD142576E58CBD = {
+			isa = PBXGroup;
+			children = (
+				B4688EF16D78CEAEC3C5DD69 /* PicSweep */,
+				71D210ECC830129A9ED527D7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3621813E9AD9AA949604CE0C /* Blockchain */ = {
+			isa = PBXGroup;
+			children = (
+				45B2AFE57F31EFD926CE2CD6 /* PhotoOwnership.swift */,
+			);
+			path = Blockchain;
+			sourceTree = "<group>";
+		};
+		71D210ECC830129A9ED527D7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				28949F7AC9B344ECB99B4D5A /* PicSweep.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B1358CAC0BE161D0224EBF0C /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				73BCF9316D77D603DF93D43D /* PrivateVault.swift */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		B4688EF16D78CEAEC3C5DD69 /* PicSweep */ = {
+			isa = PBXGroup;
+			children = (
+				F95622C294FA0640502669B3 /* Assets.xcassets */,
+				E63B3E6287967D9956C997D7 /* ContentView.swift */,
+				8E756B96E3A364ED69AC2A03 /* Info.plist */,
+				C64B4B97CB2325B016E8BF1B /* PhotoManager.swift */,
+				F0DD6B535CAADE05C7E9B9B7 /* PhotoSwipeView.swift */,
+				C6A22DDB726499DF1553E4A9 /* PicSweeperApp.swift */,
+				D6756ED288F4678D8390422B /* PlatformTypes.swift */,
+				FA4A867FCDB0EB56380F9AAA /* Features */,
+				F1DCA84CC30509DA3CE58129 /* Models */,
+			);
+			name = PicSweep;
+			path = Sources/PicSweep;
+			sourceTree = "<group>";
+		};
+		BDB13BB518F7B3F8D64BBF7B /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				0A690EA9880D8D49CA369555 /* PhotoAnalyzer.swift */,
+			);
+			path = AI;
+			sourceTree = "<group>";
+		};
+		F1DCA84CC30509DA3CE58129 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A5E337782C4390C33CF8E9B5 /* Photo.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FA4A867FCDB0EB56380F9AAA /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				BDB13BB518F7B3F8D64BBF7B /* AI */,
+				3621813E9AD9AA949604CE0C /* Blockchain */,
+				B1358CAC0BE161D0224EBF0C /* Security */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CF6B5CC5BB439EE79BFE2EBE /* PicSweep */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0D2E4D3B9441901EED90DAEF /* Build configuration list for PBXNativeTarget "PicSweep" */;
+			buildPhases = (
+				9E006416996C7F8631B466D0 /* Sources */,
+				CCF3D3877F7A58C6081CE8CB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PicSweep;
+			productName = PicSweep;
+			productReference = 28949F7AC9B344ECB99B4D5A /* PicSweep.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4F67D0B60DB0484122F63BB6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					CF6B5CC5BB439EE79BFE2EBE = {
+						DevelopmentTeam = 53F823QG8D;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = CEEBD98F19050839E2B31D56 /* Build configuration list for PBXProject "PicSweep" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 3270830E30DD142576E58CBD;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CF6B5CC5BB439EE79BFE2EBE /* PicSweep */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CCF3D3877F7A58C6081CE8CB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24751F06C6BA60E2B66589B0 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9E006416996C7F8631B466D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0F822B55B8936319A1C395F8 /* ContentView.swift in Sources */,
+				782EB881C452C5E607C7EEF4 /* Photo.swift in Sources */,
+				137C1C5F5D2F109D3CD7C8ED /* PhotoAnalyzer.swift in Sources */,
+				D6C112D5D902F406FBBE2699 /* PhotoManager.swift in Sources */,
+				AD17F80C9C6F07F92D30FA87 /* PhotoOwnership.swift in Sources */,
+				69FD14B2D55EA12684BA73EB /* PhotoSwipeView.swift in Sources */,
+				6166C5D7B0552A75B9FA875C /* PicSweeperApp.swift in Sources */,
+				39A9AF8EB69DDA4F446DEBB1 /* PlatformTypes.swift in Sources */,
+				0265A5F21D4A1F16CBA1738D /* PrivateVault.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		27C3F57E23495D223D21983A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B3166759CEE92C2379EAB66F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 53F823QG8D;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Sources/PicSweep/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 5.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.picsweep.app;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		D35529B8053C1A70873ADBAE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E7620F57B25D2D5CB3A23575 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 53F823QG8D;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Sources/PicSweep/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 5.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.picsweep.app;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0D2E4D3B9441901EED90DAEF /* Build configuration list for PBXNativeTarget "PicSweep" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E7620F57B25D2D5CB3A23575 /* Debug */,
+				B3166759CEE92C2379EAB66F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CEEBD98F19050839E2B31D56 /* Build configuration list for PBXProject "PicSweep" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D35529B8053C1A70873ADBAE /* Debug */,
+				27C3F57E23495D223D21983A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4F67D0B60DB0484122F63BB6 /* Project object */;
+}
