@@ -3,7 +3,6 @@ options:
   bundleIdPrefix: com.picsweep
   deploymentTarget:
     iOS: 15.0
-    macOS: 13.0
   platforms:
     iOS:
       baseSDK: iOS
@@ -29,6 +28,9 @@ targets:
         CURRENT_PROJECT_VERSION: 1
         SUPPORTED_PLATFORMS: iphoneos iphonesimulator
         SDKROOT: iphoneos
+        SWIFT_EMIT_LOC_STRINGS: YES
+        SWIFT_VERSION: 5.0
+        IPHONEOS_DEPLOYMENT_TARGET: 15.0
     info:
       path: Sources/PicSweep/Info.plist
       properties:
