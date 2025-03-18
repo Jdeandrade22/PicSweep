@@ -1,46 +1,25 @@
 # PicSweep
 
-A modern, cross-platform photo management application built with SwiftUI that helps users organize, secure, and analyze their photos using advanced AI capabilities.
+A modern iOS photo management application built with SwiftUI that helps users organize and clean up their photos using intuitive swipe gestures.
 
 ## Features
 
 ### Photo Management
-- Intuitive swipe-based interface for quick photo organization
-- Smart photo categorization and tagging
-- Cross-platform compatibility (iOS and macOS)
-- Efficient batch processing capabilities
+* Intuitive swipe-based interface for quick photo organization
+* Smooth animations and visual feedback
+* Native iOS photo library integration
+* Efficient photo loading and caching
 
-### AI-Powered Analysis
-- Face detection and recognition
-- Scene classification
-- Object detection
-- Text recognition in images
-- Smart photo suggestions
-
-### Security
-- Private vault for sensitive photos
-- Biometric authentication support
-- End-to-end encryption
-- Secure photo ownership verification
-- Blockchain-based ownership records
-
-### Cloud Integration
-- iCloud sync support
-- Efficient photo backup
-- Cross-device synchronization
-- Metadata preservation
+### Gesture Controls
+* Swipe right to keep photos
+* Swipe left to delete photos
+* Smooth spring animations
+* Visual feedback during swipes
 
 ## Requirements
-
-### iOS
-- iOS 14.0 or later
-- Xcode 13.0 or later
-- Swift 5.5 or later
-
-### macOS
-- macOS 11.0 or later
-- Xcode 13.0 or later
-- Swift 5.5 or later
+* iOS 14.0 or later
+* Xcode 13.0 or later
+* Swift 5.5 or later
 
 ## Installation
 
@@ -52,48 +31,18 @@ git clone https://github.com/Jdeandrade22/PicSweep.git
 2. Open the project in Xcode:
 ```bash
 cd PicSweep
-open Package.swift
+open PicSweep.xcodeproj
 ```
 
 3. Build and run the project in Xcode
 
-## Architecture
+## Usage
 
-PicSweep follows a modern SwiftUI architecture with:
-- MVVM design pattern
-- Combine for reactive programming
-- Swift Package Manager for dependencies
-- Feature-based module organization
-
-### Key Components
-- `PhotoManager`: Core photo management functionality
-- `PhotoAnalyzer`: AI-powered photo analysis
-- `PrivateVault`: Secure photo storage
-- `CloudSync`: iCloud integration
-- `PhotoOwnership`: Blockchain-based ownership tracking
-
-## Testing
-
-The project includes comprehensive unit tests covering:
-- Photo management functionality
-- AI analysis capabilities
-- Security features
-- Cloud sync operations
-- Ownership verification
-
-Run tests using:
-```bash
-swift test
-```
-
-## Recent Updates
-
-- Added cross-platform image handling with `PlatformImage` type
-- Improved CloudKit record compatibility
-- Enhanced photo analysis with Vision framework
-- Added secure photo ownership verification
-- Fixed platform-specific image handling
-- Improved test coverage and reliability
+1. Launch the app and grant photo library access when prompted
+2. Swipe right to keep photos you want to keep
+3. Swipe left to delete photos you want to remove
+4. The app will show the iOS system prompt for photo deletion
+5. Continue until you've organized all your photos
 
 ## License
 
@@ -109,7 +58,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Support
 
-For support, please open an issue in the GitHub repository or contact the development team.
+For support, please open an issue in the GitHub repository.
 
 ---
 
