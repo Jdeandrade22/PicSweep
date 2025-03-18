@@ -151,7 +151,7 @@ struct PhotoSwipeView: View {
     }
     
     private func handleSwipe(with translation: CGSize, in size: CGSize) {
-        let threshold = size.width * 0.5
+        let threshold = size.width * 0.3
         
         if translation.width < -threshold {
             deleteCurrentPhoto()
