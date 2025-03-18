@@ -96,6 +96,7 @@ struct PhotoSwipeView: View {
     @State private var currentIndex = 0
     @State private var translation: CGSize = .zero
     @State private var keepAnimation = false
+    @State private var showShareSheet = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -139,10 +140,34 @@ struct PhotoSwipeView: View {
                                 }
                             }
                         )
+                        .overlay(
+                            VStack {
+                                HStack {
+                                    Spacer()
+                                    Button(action: {
+                                        showShareSheet = true
+                                    }) {
+                                        Image(systemName: "square.and.arrow.up")
+                                            .font(.title2)
+                                            .foregroundColor(.white)
+                                            .padding()
+                                            .background(Color.black.opacity(0.5))
+                                            .clipShape(Circle())
+                                    }
+                                    .padding()
+                                }
+                                Spacer()
+                            }
+                        )
                 } else {
                     Text("No photos available")
                         .foregroundColor(.secondary)
                 }
+            }
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let currentPhoto = photoLibraryManager.currentPhoto {
+                ShareSheet(activityItems: [currentPhoto])
             }
         }
         .onAppear {
@@ -279,5 +304,20 @@ struct PhotoInfoView: View {
         return formatter.string(fromByteCount: Int64(bytes))
     }
 }
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(
+            activityItems: activityItems,
+            applicationActivities: nil
+        )
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
 //
 
