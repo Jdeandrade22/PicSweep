@@ -1,49 +1,117 @@
 import XCTest
 import SwiftUI
+import Photos
 @testable import PicSweep
 
 final class PicSweepTests: XCTestCase {
-    var photoManager: PhotoManager!
+    var photoLibraryManager: PhotoLibraryManager!
     
     override func setUpWithError() throws {
-        photoManager = PhotoManager()
+        photoLibraryManager = PhotoLibraryManager()
     }
 
     override func tearDownWithError() throws {
-        photoManager = nil
+        photoLibraryManager = nil
     }
 
-    func testPhotoManagerInitialization() throws {
-        XCTAssertNotNil(photoManager)
-        XCTAssertEqual(photoManager.currentIndex, 0)
-        XCTAssertTrue(photoManager.photos.isEmpty)
+    func testPhotoLibraryManagerInitialization() throws {
+        XCTAssertNotNil(photoLibraryManager)
+        XCTAssertEqual(photoLibraryManager.currentIndex, 0)
+        XCTAssertTrue(photoLibraryManager.photos.isEmpty)
+        XCTAssertTrue(photoLibraryManager.photoAssets.isEmpty)
+        XCTAssertEqual(photoLibraryManager.deletedCount, 0)
+        XCTAssertEqual(photoLibraryManager.savedCount, 0)
+        XCTAssertFalse(photoLibraryManager.canUndo)
     }
 
-    func testThemeConfiguration() {
-        let themeColors: [Color] = [
-            Theme.primary,
-            Theme.secondary,
-            Theme.background,
-            Theme.cardBackground,
-            Theme.text,
-            Theme.secondaryText,
-            Theme.deleteColor,
-            Theme.keepColor
-        ]
+    func testPhotoManagement() {
+        let testImage = createTestImage()
+        let testAsset = createTestPHAsset()
         
-        for color in themeColors {
-            XCTAssertNotNil(color)
-        }
+        // Add photo
+        photoLibraryManager.photos.append(testImage)
+        photoLibraryManager.photoAssets.append(testAsset)
+        photoLibraryManager.updateCurrentPhoto(at: 0)
+        
+        XCTAssertEqual(photoLibraryManager.photos.count, 1)
+        XCTAssertEqual(photoLibraryManager.photoAssets.count, 1)
+        XCTAssertNotNil(photoLibraryManager.currentPhoto)
+        
+        // Remove photo
+        photoLibraryManager.removeCurrentPhoto(at: 0)
+        XCTAssertTrue(photoLibraryManager.photos.isEmpty)
+        XCTAssertTrue(photoLibraryManager.photoAssets.isEmpty)
+        XCTAssertNil(photoLibraryManager.currentPhoto)
+        XCTAssertEqual(photoLibraryManager.deletedCount, 1)
     }
     
-    func testPhotoManagement() {
-        let photo = createTestPhoto()
+    func testUndoFunctionality() {
+        let testImage = createTestImage()
+        let testAsset = createTestPHAsset()
         
-        photoManager.addPhoto(photo)
-        XCTAssertEqual(photoManager.photos.count, 1)
-        XCTAssertEqual(photoManager.photos.first?.id, photo.id)
+        // Add photo
+        photoLibraryManager.photos.append(testImage)
+        photoLibraryManager.photoAssets.append(testAsset)
+        photoLibraryManager.updateCurrentPhoto(at: 0)
         
-        photoManager.removePhoto(photo)
-        XCTAssertTrue(photoManager.photos.isEmpty)
+        // Delete photo
+        photoLibraryManager.removeCurrentPhoto(at: 0)
+        XCTAssertEqual(photoLibraryManager.deletedCount, 1)
+        XCTAssertTrue(photoLibraryManager.canUndo)
+        
+        // Undo delete
+        photoLibraryManager.undoLastAction()
+        XCTAssertEqual(photoLibraryManager.deletedCount, 0)
+        XCTAssertFalse(photoLibraryManager.canUndo)
+        XCTAssertEqual(photoLibraryManager.currentIndex, 0)
+        XCTAssertNotNil(photoLibraryManager.currentPhoto)
+        
+        // Keep photo
+        photoLibraryManager.keepCurrentPhoto(at: 0)
+        XCTAssertEqual(photoLibraryManager.savedCount, 1)
+        XCTAssertTrue(photoLibraryManager.canUndo)
+        
+        // Undo keep
+        photoLibraryManager.undoLastAction()
+        XCTAssertEqual(photoLibraryManager.savedCount, 0)
+        XCTAssertFalse(photoLibraryManager.canUndo)
+        XCTAssertEqual(photoLibraryManager.currentIndex, 0)
+        XCTAssertNotNil(photoLibraryManager.currentPhoto)
+    }
+    
+    func testMoveToNextPhoto() {
+        let testImage1 = createTestImage()
+        let testImage2 = createTestImage()
+        let testAsset1 = createTestPHAsset()
+        let testAsset2 = createTestPHAsset()
+        
+        // Add photos
+        photoLibraryManager.photos.append(testImage1)
+        photoLibraryManager.photos.append(testImage2)
+        photoLibraryManager.photoAssets.append(testAsset1)
+        photoLibraryManager.photoAssets.append(testAsset2)
+        photoLibraryManager.updateCurrentPhoto(at: 0)
+        
+        // Move to next photo
+        photoLibraryManager.moveToNextPhoto()
+        XCTAssertEqual(photoLibraryManager.currentIndex, 1)
+        XCTAssertEqual(photoLibraryManager.currentPhoto, testImage2)
+        
+        // Move to first photo when at end
+        photoLibraryManager.moveToNextPhoto()
+        XCTAssertEqual(photoLibraryManager.currentIndex, 0)
+        XCTAssertEqual(photoLibraryManager.currentPhoto, testImage1)
+    }
+}
+
+// Helper function to create a test PHAsset
+extension XCTestCase {
+    func createTestPHAsset() -> PHAsset {
+        let fetchResult = PHAsset.fetchAssets(with: .image, options: nil)
+        if let asset = fetchResult.firstObject {
+            return asset
+        }
+        // If no real asset is available, create a mock
+        return PHAsset()
     }
 } 
