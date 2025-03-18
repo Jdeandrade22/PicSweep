@@ -1,5 +1,10 @@
 # PicSweep
 
+[![Swift](https://img.shields.io/badge/Swift-5.5-orange.svg)](https://swift.org)
+[![iOS](https://img.shields.io/badge/iOS-14.0+-blue.svg)](https://developer.apple.com/ios/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Build Status](https://github.com/Jdeandrade22/PicSweep/workflows/Swift/badge.svg)](https://github.com/Jdeandrade22/PicSweep/actions)
+
 A modern iOS photo management application built with SwiftUI that helps users organize and clean up their photos using intuitive swipe gestures.
 
 ## Features
