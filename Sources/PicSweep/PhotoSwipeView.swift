@@ -14,12 +14,56 @@ class PhotoLibraryManager: ObservableObject {
     @Published var totalPhotos: Int = 0
     @Published var processedPhotos: Int = 0
     @Published var currentPhoto: PlatformImage?
+    @Published var deletedCount: Int = 0
+    @Published var savedCount: Int = 0
+    @Published var lastAction: (type: ActionType, photo: PlatformImage, asset: PHAsset, index: Int)?
+    @Published var canUndo: Bool = false
+    @Published var currentIndex: Int = 0
+    
+    enum ActionType {
+        case delete
+        case save
+    }
 
     func removeCurrentPhoto(at index: Int) {
         guard index < photos.count else { return }
+        let deletedPhoto = photos[index]
+        let deletedAsset = photoAssets[index]
         photos.remove(at: index)
         photoAssets.remove(at: index)
+        deletedCount += 1
+        lastAction = (.delete, deletedPhoto, deletedAsset, index)
+        canUndo = true
         updateCurrentPhoto(at: index)
+    }
+    
+    func keepCurrentPhoto(at index: Int) {
+        savedCount += 1
+        let currentPhoto = photos[index]
+        let currentAsset = photoAssets[index]
+        lastAction = (.save, currentPhoto, currentAsset, index)
+        canUndo = true
+    }
+    
+    func undoLastAction() {
+        guard let lastAction = lastAction else { return }
+        
+        switch lastAction.type {
+        case .delete:
+            photos.insert(lastAction.photo, at: lastAction.index)
+            photoAssets.insert(lastAction.asset, at: lastAction.index)
+            deletedCount -= 1
+            currentIndex = lastAction.index
+            updateCurrentPhoto(at: lastAction.index)
+            
+        case .save:
+            savedCount -= 1
+            currentIndex = lastAction.index
+            updateCurrentPhoto(at: lastAction.index)
+        }
+        
+        self.lastAction = nil
+        canUndo = false
     }
     
     func updateCurrentPhoto(at index: Int) {
@@ -89,81 +133,137 @@ class PhotoLibraryManager: ObservableObject {
             }
         }
     }
+
+    func moveToNextPhoto() {
+        if currentIndex < photos.count - 1 {
+            currentIndex += 1
+        } else {
+            currentIndex = 0
+        }
+        updateCurrentPhoto(at: currentIndex)
+    }
 }
 
 struct PhotoSwipeView: View {
     @StateObject private var photoLibraryManager = PhotoLibraryManager()
-    @State private var currentIndex = 0
     @State private var translation: CGSize = .zero
     @State private var keepAnimation = false
     @State private var showShareSheet = false
     
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                if let currentPhoto = photoLibraryManager.currentPhoto {
-                    Image(platformImage: currentPhoto)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .offset(x: translation.width, y: 0)
-                        .rotationEffect(.degrees(Double(translation.width / geometry.size.width) * 25))
-                        .gesture(
-                            DragGesture()
-                                .onChanged { value in
-                                    translation = value.translation
-                                }
-                                .onEnded { value in
-                                    handleSwipe(with: value.translation, in: geometry.size)
-                                }
-                        )
-                        .overlay(
-                            Group {
-                                if translation.width > 0 {
-                                    Text("KEEP")
-                                        .font(.title)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.green)
-                                        .padding()
-                                        .background(Color.white.opacity(0.8))
-                                        .cornerRadius(10)
-                                        .offset(x: translation.width - 100)
-                                } else if translation.width < 0 {
-                                    Text("DELETE")
-                                        .font(.title)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.red)
-                                        .padding()
-                                        .background(Color.white.opacity(0.8))
-                                        .cornerRadius(10)
-                                        .offset(x: translation.width + 100)
-                                }
-                            }
-                        )
-                        .overlay(
-                            VStack {
-                                HStack {
-                                    Spacer()
-                                    Button(action: {
-                                        showShareSheet = true
-                                    }) {
-                                        Image(systemName: "square.and.arrow.up")
-                                            .font(.title2)
-                                            .foregroundColor(.white)
-                                            .padding()
-                                            .background(Color.black.opacity(0.5))
-                                            .clipShape(Circle())
+        VStack(spacing: 0) {
+            GeometryReader { geometry in
+                ZStack {
+                    if let currentPhoto = photoLibraryManager.currentPhoto {
+                        Image(platformImage: currentPhoto)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .offset(x: translation.width, y: 0)
+                            .rotationEffect(.degrees(Double(translation.width / geometry.size.width) * 25))
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        translation = value.translation
                                     }
-                                    .padding()
+                                    .onEnded { value in
+                                        handleSwipe(with: value.translation, in: geometry.size)
+                                    }
+                            )
+                            .overlay(
+                                Group {
+                                    if translation.width > 0 {
+                                        Text("KEEP")
+                                            .font(.title)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.green)
+                                            .padding()
+                                            .background(Color.white.opacity(0.8))
+                                            .cornerRadius(10)
+                                            .offset(x: translation.width - 100)
+                                    } else if translation.width < 0 {
+                                        Text("DELETE")
+                                            .font(.title)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.red)
+                                            .padding()
+                                            .background(Color.white.opacity(0.8))
+                                            .cornerRadius(10)
+                                            .offset(x: translation.width + 100)
+                                    }
                                 }
-                                Spacer()
-                            }
-                        )
-                } else {
-                    Text("No photos available")
-                        .foregroundColor(.secondary)
+                            )
+                    } else {
+                        Text("No photos available")
+                            .foregroundColor(.secondary)
+                    }
                 }
+                .overlay(
+                    VStack {
+                        HStack {
+                            if photoLibraryManager.canUndo {
+                                Button(action: {
+                                    withAnimation {
+                                        photoLibraryManager.undoLastAction()
+                                    }
+                                }) {
+                                    Image(systemName: "arrow.uturn.backward.circle.fill")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .background(Color.black.opacity(0.5))
+                                        .clipShape(Circle())
+                                }
+                                .padding()
+                            }
+                            Spacer()
+                            Button(action: {
+                                showShareSheet = true
+                            }) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .font(.title2)
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .background(Color.black.opacity(0.5))
+                                    .clipShape(Circle())
+                            }
+                            .padding()
+                        }
+                        Spacer()
+                    }
+                )
             }
+            
+            // Progress Bar and Counters
+            VStack(spacing: 8) {
+                GeometryReader { geometry in
+                    HStack(spacing: 0) {
+                        // Delete bar (grows from left)
+                        Rectangle()
+                            .fill(Color.red)
+                            .frame(width: min(CGFloat(photoLibraryManager.deletedCount) / CGFloat(max(photoLibraryManager.deletedCount + photoLibraryManager.savedCount, 1)) * geometry.size.width, geometry.size.width), height: 20)
+                        
+                        // Keep bar (grows from right)
+                        Rectangle()
+                            .fill(Color.green)
+                            .frame(width: min(CGFloat(photoLibraryManager.savedCount) / CGFloat(max(photoLibraryManager.deletedCount + photoLibraryManager.savedCount, 1)) * geometry.size.width, geometry.size.width), height: 20)
+                    }
+                    .cornerRadius(10)
+                }
+                .frame(height: 20)
+                .padding(.horizontal)
+                
+                HStack {
+                    Text("Delete: \(photoLibraryManager.deletedCount)")
+                        .foregroundColor(.red)
+                    Spacer()
+                    Text("Keep: \(photoLibraryManager.savedCount)")
+                        .foregroundColor(.green)
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 8)
+            }
+            .background(Color.black.opacity(0.1))
         }
         .sheet(isPresented: $showShareSheet) {
             if let currentPhoto = photoLibraryManager.currentPhoto {
@@ -197,35 +297,24 @@ struct PhotoSwipeView: View {
     }
     
     private func deleteCurrentPhoto() {
-        guard currentIndex < photoLibraryManager.photoAssets.count else { return }
-        
-        let asset = photoLibraryManager.photoAssets[currentIndex]
-        
-        PHPhotoLibrary.shared().performChanges({
-            PHAssetChangeRequest.deleteAssets([asset] as NSFastEnumeration)
-        }) { success, error in
-            if success {
-                DispatchQueue.main.async {
-                    photoLibraryManager.removeCurrentPhoto(at: currentIndex)
-                    moveToNextPhoto()
+        if photoLibraryManager.currentIndex < photoLibraryManager.photoAssets.count {
+            let asset = photoLibraryManager.photoAssets[photoLibraryManager.currentIndex]
+            PHPhotoLibrary.shared().performChanges({
+                PHAssetChangeRequest.deleteAssets([asset] as NSFastEnumeration)
+            }) { success, error in
+                if success {
+                    DispatchQueue.main.async {
+                        photoLibraryManager.removeCurrentPhoto(at: photoLibraryManager.currentIndex)
+                        photoLibraryManager.moveToNextPhoto()
+                    }
                 }
-            } else if let error = error {
-                print("Error deleting photo: \(error.localizedDescription)")
             }
         }
     }
     
     private func keepCurrentPhoto() {
-        moveToNextPhoto()
-    }
-    
-    private func moveToNextPhoto() {
-        if currentIndex < photoLibraryManager.photos.count - 1 {
-            currentIndex += 1
-        } else {
-            currentIndex = 0
-        }
-        photoLibraryManager.updateCurrentPhoto(at: currentIndex)
+        photoLibraryManager.keepCurrentPhoto(at: photoLibraryManager.currentIndex)
+        photoLibraryManager.moveToNextPhoto()
     }
 }
 
