@@ -2,7 +2,7 @@ name: PicSweep
 options:
   bundleIdPrefix: com.picsweep
   deploymentTarget:
-    iOS: 15.0
+    iOS: 17.0
   platforms:
     iOS:
       baseSDK: iOS
@@ -30,7 +30,7 @@ targets:
         SDKROOT: iphoneos
         SWIFT_EMIT_LOC_STRINGS: YES
         SWIFT_VERSION: 5.0
-        IPHONEOS_DEPLOYMENT_TARGET: 15.0
+        IPHONEOS_DEPLOYMENT_TARGET: 17.0
         VALIDATE_WORKSPACE: YES
         ENABLE_BITCODE: NO
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
