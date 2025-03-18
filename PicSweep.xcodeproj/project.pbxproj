@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -21,7 +21,7 @@
 
 /* Begin PBXFileReference section */
 		0A690EA9880D8D49CA369555 /* PhotoAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAnalyzer.swift; sourceTree = "<group>"; };
-		28949F7AC9B344ECB99B4D5A /* PicSweep.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PicSweep.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		28949F7AC9B344ECB99B4D5A /* PicSweep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PicSweep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45B2AFE57F31EFD926CE2CD6 /* PhotoOwnership.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoOwnership.swift; sourceTree = "<group>"; };
 		73BCF9316D77D603DF93D43D /* PrivateVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateVault.swift; sourceTree = "<group>"; };
 		8E756B96E3A364ED69AC2A03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -139,7 +139,6 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					CF6B5CC5BB439EE79BFE2EBE = {
-						DevelopmentTeam = "Jordan DeAndrade (Personal Team)";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -255,7 +254,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "Jordan DeAndrade (Personal Team)";
+				DEVELOPMENT_TEAM = Z2F97ZGU8S;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Sources/PicSweep/Info.plist;
@@ -348,7 +347,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "Jordan DeAndrade (Personal Team)";
+				DEVELOPMENT_TEAM = Z2F97ZGU8S;
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Sources/PicSweep/Info.plist;

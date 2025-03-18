@@ -37,37 +37,52 @@ class PhotoLibraryManager: ObservableObject {
             self.processedPhotos = 0
         }
         
-        PHPhotoLibrary.requestAuthorization { status in
-            if status == .authorized {
-                let fetchOptions = PHFetchOptions()
-                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-                let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
-                
-                var tempAssets: [PHAsset] = []
-                
-                fetchResult.enumerateObjects { asset, _, _ in
-                    tempAssets.append(asset)
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        
+        if status == .notDetermined {
+            PHPhotoLibrary.requestAuthorization(for: .readWrite) { [weak self] newStatus in
+                if newStatus == .authorized {
+                    self?.fetchPhotosFromLibrary()
                 }
-                
-                DispatchQueue.main.async {
-                    self.totalPhotos = tempAssets.count
-                }
-                
-                tempAssets.shuffle()
-                
-                for asset in tempAssets {
-                    let imageManager = PHImageManager.default()
-                    let targetSize = CGSize(width: 300, height: 300)
-                    let options = PHImageRequestOptions()
-                    options.isSynchronous = true
-                    
-                    imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { image, _ in
-                        if let image = image {
-                            DispatchQueue.main.async {
-                                self.photos.append(image)
-                                self.photoAssets.append(asset)
-                                self.processedPhotos += 1
-                            }
+            }
+        } else if status == .authorized {
+            fetchPhotosFromLibrary()
+        }
+    }
+    
+    private func fetchPhotosFromLibrary() {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
+        
+        var tempAssets: [PHAsset] = []
+        
+        fetchResult.enumerateObjects { asset, _, _ in
+            tempAssets.append(asset)
+        }
+        
+        DispatchQueue.main.async {
+            self.totalPhotos = tempAssets.count
+        }
+        
+        tempAssets.shuffle()
+        
+        for asset in tempAssets {
+            let imageManager = PHImageManager.default()
+            let targetSize = CGSize(width: 300, height: 300)
+            let options = PHImageRequestOptions()
+            options.isSynchronous = false
+            options.deliveryMode = .highQualityFormat
+            
+            imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { [weak self] image, _ in
+                if let image = image {
+                    DispatchQueue.main.async {
+                        self?.photos.append(image)
+                        self?.photoAssets.append(asset)
+                        self?.processedPhotos += 1
+                        
+                        if self?.processedPhotos == 1 {
+                            self?.currentPhoto = image
                         }
                     }
                 }
@@ -80,8 +95,7 @@ struct PhotoSwipeView: View {
     @StateObject private var photoLibraryManager = PhotoLibraryManager()
     @State private var currentIndex = 0
     @State private var translation: CGSize = .zero
-    @State private var showDeleteConfirmation = false
-    @State private var showKeepConfirmation = false
+    @State private var keepAnimation = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -92,6 +106,7 @@ struct PhotoSwipeView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .offset(x: translation.width, y: 0)
+                        .rotationEffect(.degrees(Double(translation.width / geometry.size.width) * 25))
                         .gesture(
                             DragGesture()
                                 .onChanged { value in
@@ -101,23 +116,34 @@ struct PhotoSwipeView: View {
                                     handleSwipe(with: value.translation, in: geometry.size)
                                 }
                         )
+                        .overlay(
+                            Group {
+                                if translation.width > 0 {
+                                    Text("KEEP")
+                                        .font(.title)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.green)
+                                        .padding()
+                                        .background(Color.white.opacity(0.8))
+                                        .cornerRadius(10)
+                                        .offset(x: translation.width - 100)
+                                } else if translation.width < 0 {
+                                    Text("DELETE")
+                                        .font(.title)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.red)
+                                        .padding()
+                                        .background(Color.white.opacity(0.8))
+                                        .cornerRadius(10)
+                                        .offset(x: translation.width + 100)
+                                }
+                            }
+                        )
                 } else {
                     Text("No photos available")
                         .foregroundColor(.secondary)
                 }
             }
-        }
-        .alert("Delete Photo?", isPresented: $showDeleteConfirmation) {
-            Button("Delete", role: .destructive) {
-                deleteCurrentPhoto()
-            }
-            Button("Cancel", role: .cancel) {}
-        }
-        .alert("Keep Photo?", isPresented: $showKeepConfirmation) {
-            Button("Keep", role: .none) {
-                keepCurrentPhoto()
-            }
-            Button("Cancel", role: .cancel) {}
         }
         .onAppear {
             photoLibraryManager.fetchPhotos()
@@ -128,19 +154,40 @@ struct PhotoSwipeView: View {
         let threshold = size.width * 0.5
         
         if translation.width < -threshold {
-            showDeleteConfirmation = true
+            deleteCurrentPhoto()
         } else if translation.width > threshold {
-            showKeepConfirmation = true
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                keepAnimation = true
+                self.translation = CGSize(width: size.width * 2, height: 0)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                keepCurrentPhoto()
+            }
         }
         
         withAnimation {
             self.translation = .zero
+            self.keepAnimation = false
         }
     }
     
     private func deleteCurrentPhoto() {
-        photoLibraryManager.removeCurrentPhoto(at: currentIndex)
-        moveToNextPhoto()
+        guard currentIndex < photoLibraryManager.photoAssets.count else { return }
+        
+        let asset = photoLibraryManager.photoAssets[currentIndex]
+        
+        PHPhotoLibrary.shared().performChanges({
+            PHAssetChangeRequest.deleteAssets([asset] as NSFastEnumeration)
+        }) { success, error in
+            if success {
+                DispatchQueue.main.async {
+                    photoLibraryManager.removeCurrentPhoto(at: currentIndex)
+                    moveToNextPhoto()
+                }
+            } else if let error = error {
+                print("Error deleting photo: \(error.localizedDescription)")
+            }
+        }
     }
     
     private func keepCurrentPhoto() {
