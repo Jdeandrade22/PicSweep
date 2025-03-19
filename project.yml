@@ -16,7 +16,6 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.picsweep.app
-        DEVELOPMENT_TEAM: "Jordan DeAndrade (Personal Team)"
         CODE_SIGN_STYLE: Automatic
         CODE_SIGN_IDENTITY: "Apple Development"
         PROVISIONING_PROFILE_SPECIFIER: ""
