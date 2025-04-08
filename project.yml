@@ -33,7 +33,9 @@ targets:
         VALIDATE_WORKSPACE: YES
         ENABLE_BITCODE: NO
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
-        EXCLUDED_ARCHS[sdk=iphonesimulator*]: arm64
+        ARCHS: "$(ARCHS_STANDARD)"
+        VALID_ARCHS: "arm64 arm64e x86_64"
+        EXCLUDED_ARCHS[sdk=iphonesimulator*]: ""
     info:
       path: Sources/PicSweep/Info.plist
       properties:
@@ -42,7 +44,7 @@ targets:
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
         UIRequiredDeviceCapabilities:
-          - armv7
+          - arm64
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         NSPhotoLibraryUsageDescription: "PicSweep needs access to your photo library to help you organize and clean up your photos."

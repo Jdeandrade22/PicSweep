@@ -96,9 +96,34 @@ public class PhotoManager: ObservableObject {
         let options = PHImageRequestOptions()
         options.isSynchronous = false
         options.deliveryMode = .highQualityFormat
+        options.isNetworkAccessAllowed = true
+        options.resizeMode = .exact
 
-        imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { image, _ in
+        imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { image, info in
+            if let error = info?[PHImageErrorKey] as? Error {
+                print("Error loading image: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+            
+            guard let image = image else {
+                print("Failed to load image")
+                completion(nil)
+                return
+            }
+            
             #if os(iOS)
+            // Convert to sRGB color space to avoid color profile issues
+            if let cgImage = image.cgImage {
+                let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
+                let context = CIContext(options: nil)
+                let ciImage = CIImage(cgImage: cgImage)
+                if let outputCGImage = context.createCGImage(ciImage, from: ciImage.extent, format: .RGBA8, colorSpace: colorSpace) {
+                    let processedImage = UIImage(cgImage: outputCGImage)
+                    completion(processedImage)
+                    return
+                }
+            }
             completion(image)
             #else
             if let image = image {
